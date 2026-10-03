@@ -624,6 +624,34 @@ footer nav a:hover{color:var(--gold2)}
   #obar .btn{padding:10px 16px;white-space:nowrap}
   .brand img{height:50px}
 }
+
+/* =====================================================================
+   v4 · fotos reales de fruta en las animaciones
+   ===================================================================== */
+.sp.fr{height:auto}
+.sp.fr img{width:100%;height:auto;display:block;transform:scaleX(var(--fl,1));pointer-events:none;user-select:none}
+@keyframes spawn{from{scale:0;opacity:0;rotate:-140deg}}
+.sp.fr{filter:drop-shadow(0 14px 12px rgba(0,0,0,.32))}
+
+/* ráfaga de fruta al agregar al pedido */
+.fruit-burst{position:fixed;z-index:160;pointer-events:none;will-change:transform,opacity;filter:drop-shadow(0 6px 6px rgba(0,0,0,.35))}
+
+/* fruta que flota alrededor de la lata en la ventana de detalle */
+.mfruits{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.mfr{position:absolute;width:var(--w,70px);height:auto;filter:drop-shadow(0 12px 12px rgba(0,0,0,.3));animation:mfin 1s var(--ease) backwards,mfloat var(--t,6s) ease-in-out infinite alternate;animation-delay:var(--sd,0s),0s}
+@keyframes mfin{from{opacity:0;scale:.2;rotate:-140deg}}
+@keyframes mfloat{to{transform:translate(var(--dx,10px),var(--dy,-18px)) rotate(var(--r,20deg))}}
+.m-stage #mimg{position:relative;z-index:2}
+@media(max-width:760px){.mfr{width:calc(var(--w,70px)*.72)}}
+
+/* fruta decorativa de fondo en las secciones, con parallax al desplazarse */
+.fdecor{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.fdecor img{position:absolute;width:var(--w,150px);height:auto;opacity:.5;filter:blur(1.2px) drop-shadow(0 22px 22px rgba(0,0,0,.55));transform:translateY(calc(var(--fy,0px)*var(--k,1)));animation:fspin var(--t,30s) linear infinite}
+@keyframes fspin{to{rotate:360deg}}
+.sec>.wrap{position:relative;z-index:1}
+@media(max-width:620px){.fdecor img{opacity:.32;width:calc(var(--w,150px)*.6)}}
+.m-stage img.mfr{height:auto;max-width:none;width:var(--w,70px);filter:drop-shadow(0 12px 12px rgba(0,0,0,.3))}
+@media(max-width:760px){.m-stage img.mfr{width:calc(var(--w,70px)*.7)}}
 </style>
 </head>
 <body>
@@ -729,6 +757,7 @@ footer nav a:hover{color:var(--gold2)}
 
 <!-- ================= LATAS ================= -->
 <section id="latas" class="sec">
+  <div class="fdecor" data-f="f-limahalf,f-orange,f-straw,f-pinawedge" aria-hidden="true"></div>
   <div class="wrap">
     <div class="title reveal"><small>Cócteles preparados</small><h2 data-split>Nuestras latas</h2><p>Todas a <b>$25.000 COP</b> · Toca una lata para ver el detalle</p></div>
     <div class="tools reveal">
@@ -743,6 +772,7 @@ footer nav a:hover{color:var(--gold2)}
 
 <!-- ================= QUIZ ================= -->
 <section id="tu-sabor" class="sec alt">
+  <div class="fdecor" data-f="f-passion,f-berries,f-limawedge" aria-hidden="true"></div>
   <div class="wrap">
     <div class="title reveal"><small>Tres preguntas</small><h2 data-split>Encuentra tu sabor</h2><p>Responde rápido y te recomendamos una lata</p></div>
     <div class="quiz reveal" id="quiz"></div>
@@ -764,6 +794,7 @@ footer nav a:hover{color:var(--gold2)}
 
 <!-- ================= FIESTAS ================= -->
 <section id="fiestas" class="sec alt">
+  <div class="fdecor" data-f="f-tamarindopen,f-strawhalf,f-orange" aria-hidden="true"></div>
   <div class="wrap">
     <div class="title reveal"><small>Reuniones y celebraciones</small><h2 data-split>Pedidos para fiestas</h2></div>
     <div class="party">
@@ -840,6 +871,7 @@ footer nav a:hover{color:var(--gold2)}
   <div class="m-panel" id="mpanel">
     <button class="m-x" data-close aria-label="Cerrar">✕</button>
     <div class="m-stage">
+      <div class="mfruits" id="mfruits" aria-hidden="true"></div>
       <button class="m-nav l" id="mprev" aria-label="Anterior">‹</button>
       <img id="mimg" alt="">
       <button class="m-nav r" id="mnext" aria-label="Siguiente">›</button>
@@ -881,31 +913,31 @@ const CATS = { tropical:"Tropicales", clasico:"Clásicos", frutal:"Frutales", ta
 const T=(hb1,hb2,hb3,k1,k2,k3,ink,ink2,acc,edge,shd)=>({hb1,hb2,hb3,k1,k2,k3,ink,ink2,acc,edge,shd});
 // tags y col alimentan la recomendación de "Encuentra tu sabor"
 const CANS = [
- {id:"coco",   cat:"tropical", tags:["tropical","suave","dulce"],                  col:"oscuro",   short:"Coco",      label:"Coco",            name:"Buchanan's Coco",      chips:[...CH_B,"Sabor natural"],     desc:"Cóctel preparado, cremoso y refrescante, con sabor natural a coco.",          leaves:"palm",   sprite:["coco"],                pc:{f:"255,255,255",s:"138,90,16"},
+ {id:"coco",   cat:"tropical", tags:["tropical","suave","dulce"],                  col:"oscuro",   short:"Coco",      label:"Coco",            name:"Buchanan's Coco",      chips:[...CH_B,"Sabor natural"],     desc:"Cóctel preparado, cremoso y refrescante, con sabor natural a coco.",          leaves:"palm",   sprite:["f-coco"],                pc:{f:"255,255,255",s:"138,90,16"},
   t:T('#fbf3e0','#f1e1bf','#e4c995','#8fbf6a','#fff6dc','#b98150','#4a2a10','#6b5238','#8a5f10','rgba(90,52,22,.35)','rgba(74,42,16,.5)')},
- {id:"pina",   cat:"tropical", tags:["tropical","dulce","frutal"],                 col:"amarillo", short:"Piña",      label:"Piña",            name:"Buchanan's Piña",      chips:[...CH_B,"Sabor natural"],     desc:"Cóctel preparado tropical, con sabor natural a piña.",                         leaves:"pina",   sprite:["pina"],                pc:{f:"255,247,170",s:"194,122,0"},
+ {id:"pina",   cat:"tropical", tags:["tropical","dulce","frutal"],                 col:"amarillo", short:"Piña",      label:"Piña",            name:"Buchanan's Piña",      chips:[...CH_B,"Sabor natural"],     desc:"Cóctel preparado tropical, con sabor natural a piña.",                         leaves:"pina",   sprite:["f-pinawedge","f-pina","f-pinawedge"],                pc:{f:"255,247,170",s:"194,122,0"},
   t:T('#fffbd0','#ffe66b','#f6b52c','#7cc24a','#fff3a0','#ff9a2e','#4d3200','#6e5200','#9a5800','rgba(150,90,0,.4)','rgba(110,70,0,.5)')},
- {id:"rose",   cat:"frutal",   tags:["dulce","suave","frutal"],                    col:"rosa",     short:"Rose",      label:"Tequila Rose",    name:"Tequila Rose",         chips:[...CH_B,"A base de tequila"], desc:"Cóctel preparado a base de tequila, suave, dulce y de color rosa.",            leaves:"rose",   sprite:["petal"],               pc:{f:"255,205,225",s:"176,18,79",petal:1},
+ {id:"rose",   cat:"frutal",   tags:["dulce","suave","frutal"],                    col:"rosa",     short:"Rose",      label:"Tequila Rose",    name:"Tequila Rose",         chips:[...CH_B,"A base de tequila"], desc:"Cóctel preparado a base de tequila, suave, dulce y de color rosa.",            leaves:"rose",   sprite:["f-straw","petal","f-strawhalf","petal"],               pc:{f:"255,205,225",s:"176,18,79",petal:1},
   t:T('#fff1f5','#ffc3d6','#f07aa3','#ff8fb6','#fff0f6','#c2185b','#5a0f2e','#7d3050','#b0124f','rgba(160,30,80,.4)','rgba(150,20,70,.5)')},
- {id:"margarita",cat:"clasico",tags:["clasico","citrico","fresco"],                col:"verde",    short:"Margarita", label:"Margarita",       name:"Margarita Clásico",    chips:CH_N,                          desc:"El clásico margarita en lata: limón, borde de sal y mucho hielo.",             leaves:"mint",   sprite:["lime","mint"],         pc:{f:"240,255,170",s:"47,122,10"},
+ {id:"margarita",cat:"clasico",tags:["clasico","citrico","fresco"],                col:"verde",    short:"Margarita", label:"Margarita",       name:"Margarita Clásico",    chips:CH_N,                          desc:"El clásico margarita en lata: limón, borde de sal y mucho hielo.",             leaves:"mint",   sprite:["f-limahalf","f-limawedge","mint","f-limawedge"],         pc:{f:"240,255,170",s:"47,122,10"},
   t:T('#f4ffd2','#c9ee45','#7cc61e','#6fd04a','#fbffcf','#1aa39a','#173300','#35591a','#2f7a0a','rgba(40,110,10,.4)','rgba(30,90,10,.5)')},
- {id:"beach",  cat:"tropical", tags:["tropical","frutal","dulce"],                 col:"amarillo", short:"Beach",     label:"Sex on the Beach",name:"Sex on the Beach",     chips:CH_N,                          desc:"El clásico tropical: naranja, frutas y un atardecer de playa en cada sorbo.",   leaves:"palm",   sprite:["orange"],              pc:{f:"255,224,160",s:"179,71,0"},
+ {id:"beach",  cat:"tropical", tags:["tropical","frutal","dulce"],                 col:"amarillo", short:"Beach",     label:"Sex on the Beach",name:"Sex on the Beach",     chips:CH_N,                          desc:"El clásico tropical: naranja, frutas y un atardecer de playa en cada sorbo.",   leaves:"palm",   sprite:["f-orange","f-pinawedge","f-berries","f-orange"],              pc:{f:"255,224,160",s:"179,71,0"},
   t:T('#fff3d6','#ffc65a','#ff8a2b','#ffb02e','#fff0c2','#ff5a36','#5a2a00','#7a4410','#b34700','rgba(180,80,0,.4)','rgba(160,70,0,.5)')},
- {id:"ruby",   cat:"frutal",   tags:["frutal","intenso","dulce"],                  col:"rosa",     short:"Ruby",      label:"Ruby Fresh",      name:"Ruby Fresh",           chips:CH_N,                          desc:"Cóctel frutal de frutos rojos, fresco, intenso y de color rubí.",               leaves:"ruby",   sprite:["berry"],               pc:{f:"255,200,215",s:"142,11,58",petal:1},
+ {id:"ruby",   cat:"frutal",   tags:["frutal","intenso","dulce"],                  col:"rosa",     short:"Ruby",      label:"Ruby Fresh",      name:"Ruby Fresh",           chips:CH_N,                          desc:"Cóctel frutal de frutos rojos, fresco, intenso y de color rubí.",               leaves:"ruby",   sprite:["f-berries","f-strawhalf","berry","f-berries"],               pc:{f:"255,200,215",s:"142,11,58",petal:1},
   t:T('#ffe3ec','#ff6b9a','#d4165f','#ff4d86','#ffd1e0','#8e0b3a','#4a0820','#7a1b42','#a30d4a','rgba(142,11,58,.45)','rgba(142,11,58,.55)')},
- {id:"mojito", cat:"clasico",  tags:["clasico","citrico","fresco"],                col:"verde",    short:"Mojito",    label:"Mojito",          name:"Mojito",               chips:CH_N,                          desc:"El clásico cubano: limón, hierbabuena y mucho hielo.",                          leaves:"mint",   sprite:["mint","lime"],         pc:{f:"220,255,215",s:"31,122,50"},
+ {id:"mojito", cat:"clasico",  tags:["clasico","citrico","fresco"],                col:"verde",    short:"Mojito",    label:"Mojito",          name:"Mojito",               chips:CH_N,                          desc:"El clásico cubano: limón, hierbabuena y mucho hielo.",                          leaves:"mint",   sprite:["f-limawedge","mint","f-limahalf","mint"],         pc:{f:"220,255,215",s:"31,122,50"},
   t:T('#eaffe9','#a9e89a','#4fbf5a','#34c46a','#e5ffe0','#0f7a3a','#0f3a1c','#2a5c38','#1b6f2e','rgba(15,100,40,.4)','rgba(15,80,35,.5)')},
- {id:"mule",   cat:"clasico",  tags:["clasico","fresco","citrico","intenso"],      col:"oscuro",   short:"Mule",      label:"Moscow Mule",     name:"Moscow Mule",          chips:CH_N,                          desc:"Clásico fresco y chispeante, con limón y un toque de jengibre.",                leaves:"ice",    sprite:["ice","lime"],          pc:{f:"255,255,255",s:"90,130,170"},
+ {id:"mule",   cat:"clasico",  tags:["clasico","fresco","citrico","intenso"],      col:"oscuro",   short:"Mule",      label:"Moscow Mule",     name:"Moscow Mule",          chips:CH_N,                          desc:"Clásico fresco y chispeante, con limón y un toque de jengibre.",                leaves:"ice",    sprite:["f-limawedge","ice","f-limahalf","ice"],          pc:{f:"255,255,255",s:"90,130,170"},
   t:T('#f8f9fb','#d8dde4','#a9b4c1','#c3ccd6','#ffffff','#c47a3a','#2b2218','#4d4d57','#9a5a22','rgba(70,85,100,.4)','rgba(40,55,70,.5)')},
- {id:"hpnotiq",cat:"tropical", tags:["tropical","dulce","fresco"],                 col:"verde",    short:"Hpnotiq",   label:"Hpnotiq",         name:"Hpnotiq",              chips:CH_N,                          desc:"Cóctel azul intenso, frutal y refrescante, de color hipnótico.",                leaves:"blue",   sprite:["drop","ice"],          pc:{f:"200,235,255",s:"11,95,184"},
+ {id:"hpnotiq",cat:"tropical", tags:["tropical","dulce","fresco"],                 col:"verde",    short:"Hpnotiq",   label:"Hpnotiq",         name:"Hpnotiq",              chips:CH_N,                          desc:"Cóctel azul intenso, frutal y refrescante, de color hipnótico.",                leaves:"blue",   sprite:["drop","ice","f-pinawedge","drop"],          pc:{f:"200,235,255",s:"11,95,184"},
   t:T('#e9f7ff','#62c8ff','#1677d6','#35b6ff','#d8f1ff','#0a4fa8','#05244a','#1f4a7a','#0b5fb8','rgba(10,80,170,.42)','rgba(10,70,150,.55)')},
- {id:"sinaloa",cat:"tropical", tags:["tropical","frutal","acido","intenso"],       col:"amarillo", short:"Sinaloa",   label:"Sinaloa",         name:"Sinaloa",              chips:CH_N,                          desc:"Cóctel tropical de maracuyá y flor de jamaica, dulce y vibrante.",              leaves:"gold",   sprite:["passion","hibiscus"],  pc:{f:"255,236,170",s:"184,66,10"},
+ {id:"sinaloa",cat:"tropical", tags:["tropical","frutal","acido","intenso"],       col:"amarillo", short:"Sinaloa",   label:"Sinaloa",         name:"Sinaloa",              chips:CH_N,                          desc:"Cóctel tropical de maracuyá y flor de jamaica, dulce y vibrante.",              leaves:"gold",   sprite:["f-passion","hibiscus","f-passion","f-orange"],  pc:{f:"255,236,170",s:"184,66,10"},
   t:T('#fff6cf','#ffd54a','#ff9f1c','#ffc233','#fff2b8','#e63946','#4a2a00','#7a4a0a','#b8420a','rgba(190,100,0,.4)','rgba(170,90,0,.5)')},
- {id:"tamarindo",cat:"tamarindo",tags:["acido","intenso","dulce"],                  col:"oscuro",   short:"Tamarindo", label:"Tamarindo",       name:"Tamarindo",            chips:CH_N,                          desc:"Cóctel de tamarindo: dulce, ácido y con mucho carácter.",                       leaves:"palm",   sprite:["tamarind"],            pc:{f:"255,222,190",s:"138,59,18"},
+ {id:"tamarindo",cat:"tamarindo",tags:["acido","intenso","dulce"],                  col:"oscuro",   short:"Tamarindo", label:"Tamarindo",       name:"Tamarindo",            chips:CH_N,                          desc:"Cóctel de tamarindo: dulce, ácido y con mucho carácter.",                       leaves:"palm",   sprite:["f-tamarind","f-tamarindopen","f-tamarind"],            pc:{f:"255,222,190",s:"138,59,18"},
   t:T('#fff0e0','#d98a4e','#8a3b12','#c8692f','#ffe2c4','#5a1f08','#3a1706','#6b3b20','#8a3b12','rgba(90,35,10,.45)','rgba(70,25,5,.55)')},
- {id:"smirnoff",cat:"tamarindo",tags:["acido","intenso","dulce"],                  col:"oscuro",   short:"Smirnoff",  label:"Smirnoff Tam.",   name:"Smirnoff Tamarindo",   chips:CH_N,                          desc:"Cóctel preparado Smirnoff sabor tamarindo: dulce, ácido y bien frío.",          leaves:"fiesta", sprite:["marigold","tamarind"], pc:{f:"255,225,170",s:"181,16,95",petal:1},
+ {id:"smirnoff",cat:"tamarindo",tags:["acido","intenso","dulce"],                  col:"oscuro",   short:"Smirnoff",  label:"Smirnoff Tam.",   name:"Smirnoff Tamarindo",   chips:CH_N,                          desc:"Cóctel preparado Smirnoff sabor tamarindo: dulce, ácido y bien frío.",          leaves:"fiesta", sprite:["f-tamarindopen","marigold","f-tamarind","marigold"], pc:{f:"255,225,170",s:"181,16,95",petal:1},
   t:T('#fff4e0','#ffb86b','#e63e6d','#ff9f1c','#ffe8c2','#b5179e','#3b0a2e','#6a2a55','#b5105f','rgba(181,16,95,.42)','rgba(150,20,90,.5)')},
- {id:"sangria",cat:"frutal",   tags:["frutal","dulce","intenso"],                  col:"rosa",     short:"Sangría",   label:"Sangría Coqueta", name:"Sangría Coqueta",      chips:CH_N,                          desc:"Sangría frutal de fresa, cereza y naranja, fresca y coqueta.",                  leaves:"sangria",sprite:["strawberry","orange"], pc:{f:"255,205,205",s:"130,10,20",petal:1},
+ {id:"sangria",cat:"frutal",   tags:["frutal","dulce","intenso"],                  col:"rosa",     short:"Sangría",   label:"Sangría Coqueta", name:"Sangría Coqueta",      chips:CH_N,                          desc:"Sangría frutal de fresa, cereza y naranja, fresca y coqueta.",                  leaves:"sangria",sprite:["f-straw","f-orange","f-berries","f-strawhalf"], pc:{f:"255,205,205",s:"130,10,20",petal:1},
   t:T('#ffe6e6','#ff6262','#b3121f','#ff4d4d','#ffd6d6','#7a0a14','#4a0509','#7a1d24','#a50e1c','rgba(130,10,20,.45)','rgba(130,10,20,.55)')}
 ];
 CANS.forEach(c=>{c.price=PRECIO;c.img=`img/${c.id}.webp`;c.card=`img/m-${c.id}.webp`;c.thumb=`img/t-${c.id}.webp`;});
@@ -1010,12 +1042,21 @@ const SPR={
   strawberry:'<svg viewBox="0 0 100 100"><path d="M50 92 C20 76 12 48 20 36 C32 22 68 22 80 36 C88 48 80 76 50 92Z" fill="#e8283c"/><g fill="#ffe27a"><ellipse cx="36" cy="46" rx="2" ry="3"/><ellipse cx="52" cy="42" rx="2" ry="3"/><ellipse cx="66" cy="48" rx="2" ry="3"/><ellipse cx="44" cy="62" rx="2" ry="3"/><ellipse cx="60" cy="64" rx="2" ry="3"/><ellipse cx="50" cy="78" rx="2" ry="3"/></g><path d="M30 28 L50 10 L70 28 L50 34Z" fill="#3fb24f"/></svg>'
 };
 const SPOTS=[[4,16],[13,72],[20,38],[91,20],[83,68],[95,46],[43,8],[57,90],[34,88],[67,10],[7,90],[87,88]];
+const FR=n=>`<img src="img/${n}.webp" alt="" decoding="async" draggable="false">`;
+/* ingredientes flotantes: fotos reales de fruta en tres capas de profundidad (frente, medio y fondo) */
 function buildSprites(kinds){
   const box=$('#sprites');box.innerHTML='';
   SPOTS.slice(0,SMALL?7:12).forEach(([x,y],k)=>{
-    const sz=30+Math.random()*44,d=document.createElement('div');d.className='sp';d.dataset.depth=(sz/90).toFixed(2);
-    d.style.cssText=`left:${x+(Math.random()*4-2)}%;top:${y+(Math.random()*4-2)}%;width:${sz}px;height:${sz}px;--t:${6+Math.random()*6}s;--dl:${-Math.random()*6}s;--sd:${k*.05}s;--dx:${(Math.random()*50-25).toFixed(0)}px;--dy:${(Math.random()*-60+10).toFixed(0)}px;--r:${(Math.random()*120-60).toFixed(0)}deg;`+(SMALL?'':sz>66?'filter:blur(2.5px) drop-shadow(0 8px 8px rgba(0,0,0,.25));':sz<38?'filter:blur(1px);opacity:.85;':'');
-    d.innerHTML=SPR[kinds[k%kinds.length]];box.appendChild(d);
+    const kind=kinds[k%kinds.length],photo=kind.startsWith('f-'),layer=k%3;
+    const nearText=x<30&&y>18&&y<84;
+    const sz=(photo?(layer===0?(SMALL?70:104):layer===1?(SMALL?48:68):(SMALL?34:46))*(.85+Math.random()*.4):30+Math.random()*44)*(photo&&nearText?.62:1);
+    const blur=SMALL?0:photo?(layer===0?2.6:layer===2?1.4:0):(sz>66?2.5:sz<38?1:0);
+    const d=document.createElement('div');d.className='sp'+(photo?' fr':'');
+    d.dataset.depth=(photo?[1.3,.8,.5][layer]:sz/90).toFixed(2);
+    d.style.cssText=`left:${(x+Math.random()*4-2).toFixed(1)}%;top:${(y+Math.random()*4-2).toFixed(1)}%;width:${sz.toFixed(0)}px;`+(photo?'':`height:${sz.toFixed(0)}px;`)+
+      `--t:${(photo?8+Math.random()*7:6+Math.random()*6).toFixed(1)}s;--dl:${(-Math.random()*6).toFixed(1)}s;--sd:${(k*.06).toFixed(2)}s;--dx:${(Math.random()*50-25).toFixed(0)}px;--dy:${(Math.random()*-60+10).toFixed(0)}px;--r:${(photo?Math.random()*200-100:Math.random()*120-60).toFixed(0)}deg;--fl:${Math.random()<.5?-1:1};`+
+      (blur?`filter:blur(${blur}px) drop-shadow(0 10px 10px rgba(0,0,0,.28));`:'')+(photo&&layer===2?'opacity:.8;':'');
+    d.innerHTML=photo?FR(kind):SPR[kind];box.appendChild(d);
   });
 }
 
@@ -1036,6 +1077,7 @@ function start(){
   const d=$$('.dk')[0]; if(d&&!manual)d.classList.add('auto');
   schedule();
   setTimeout(()=>CANS.forEach((c,k)=>setTimeout(()=>preload(c.img),k*350)),3500);
+  setTimeout(()=>FRUIT_KINDS.forEach((n,k)=>setTimeout(()=>preload(`img/${n}.webp`),k*200)),1200);
 }
 try{ if(sessionStorage.getItem('ok')) $('#age').remove(); }catch(e){}
 const yes=$('#yes'); if(yes) yes.onclick=()=>{ try{sessionStorage.setItem('ok','1')}catch(e){} $('#age').remove(); start(); };
@@ -1092,7 +1134,11 @@ function onScroll(){
   hd.classList.toggle('scrolled',s>30);
   bar.style.width=(s/Math.max(1,document.body.scrollHeight-innerHeight)*100)+'%';
   if(s<innerHeight*1.3)hero.style.setProperty('--p',Math.min(1,s/(innerHeight*.9)).toFixed(3));
+  if(!reduce)$$('.fdecor').forEach(el=>{const r=el.parentElement.getBoundingClientRect();if(r.bottom>-200&&r.top<innerHeight+200)el.style.setProperty('--fy',((r.top+r.height/2-innerHeight/2)*-.1).toFixed(1)+'px');});
 }
+/* fruta decorativa de fondo en las secciones */
+const FPOS=[['left:-2%;top:6%',170,'1',34],['right:-3%;top:34%',150,'-1.4',40],['left:3%;bottom:4%',130,'1.8',46],['right:2%;bottom:7%',110,'-.8',30]];
+$$('.fdecor').forEach(el=>el.dataset.f.split(',').forEach((n,i)=>{const p=FPOS[i%FPOS.length];const im=document.createElement('img');im.src=`img/${n}.webp`;im.alt='';im.loading='lazy';im.decoding='async';im.style.cssText=`${p[0]};--w:${p[1]}px;--k:${p[2]};--t:${p[3]}s;`;el.appendChild(im);}));
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(onScroll);}},{passive:true});
 $('#burger').onclick=()=>{const o=$('#menu').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o);};
 $$('#menu a').forEach(a=>a.addEventListener('click',()=>{$('#menu').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');}));
@@ -1159,10 +1205,28 @@ function fly(src,from){
     {transform:`translate(${dx}px,${dy}px) scale(.15) rotate(24deg)`,opacity:.35}
   ],{duration:900,easing:'cubic-bezier(.5,0,.3,1)'}).onfinish=()=>{im.remove();const b=$('#cartOpen');b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit');};
 }
+/* ráfaga de fruta del sabor que sale disparada desde el botón */
+const FRUIT_KINDS=['f-limahalf','f-coco','f-pinawedge','f-pina','f-passion','f-limawedge','f-tamarind','f-tamarindopen','f-berries','f-orange','f-strawhalf','f-straw'];
+function fruitBurst(from,id){
+  if(reduce||!from)return;
+  let ks=(byId[id].sprite||[]).filter(k=>k.startsWith('f-'));if(!ks.length)ks=['f-limawedge','f-orange'];
+  const r=from.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,n=SMALL?6:9;
+  for(let i=0;i<n;i++){
+    const im=document.createElement('img');im.src=`img/${ks[i%ks.length]}.webp`;im.alt='';im.className='fruit-burst';
+    const s=22+Math.random()*26;im.style.cssText=`left:${cx-s/2}px;top:${cy-s/2}px;width:${s}px;height:auto`;
+    document.body.appendChild(im);
+    const a=-Math.PI/2+(Math.random()-.5)*Math.PI*1.5,dist=70+Math.random()*100,dx=Math.cos(a)*dist,dy=Math.sin(a)*dist,rot=(Math.random()-.5)*540;
+    im.animate([
+      {transform:'translate(0,0) scale(.3) rotate(0deg)',opacity:0},
+      {transform:`translate(${dx*.55}px,${dy*.55}px) scale(1) rotate(${rot*.5}deg)`,opacity:1,offset:.28},
+      {transform:`translate(${dx}px,${dy+90}px) scale(.8) rotate(${rot}deg)`,opacity:0}
+    ],{duration:900+Math.random()*400,easing:'cubic-bezier(.2,.7,.3,1)',delay:Math.random()*80}).onfinish=()=>im.remove();
+  }
+}
 function add(id,d=1,from=null){
   cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];
   store.set('cart',cart);draw();
-  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);}
+  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);}
 }
 function renderActs(){
   $$('.act').forEach(el=>{
@@ -1293,6 +1357,9 @@ function fillModal(c,dir){
   $('#mprice').innerHTML=money(c.price)+'<small>COP</small>';
   const im=$('#mimg');im.classList.remove('in');im.src=c.img;im.alt=c.name;im.style.setProperty('--dir',dir+'px');void im.offsetWidth;im.classList.add('in');
   $('#mact').dataset.id=c.id;renderActs();paintFavBtn();
+  const POS=[['left:3%;top:6%',74,'-1.2s'],['right:4%;bottom:8%',92,'-3s'],['left:9%;bottom:5%',58,'-2s']];
+  const ks=(c.sprite||[]).filter(k=>k.startsWith('f-'));
+  $('#mfruits').innerHTML=ks.length?POS.map((p,i)=>`<img class="mfr" src="img/${ks[i%ks.length]}.webp" alt="" style="${p[0]};--w:${p[1]}px;--t:${5+i*1.3}s;--sd:${i*.12}s;--dx:${i%2?-14:12}px;--dy:${-12-i*5}px;--r:${i%2?-24:20}deg">`).join(''):'';
   preload(byId[mlist[(mi+1)%mlist.length].id].img);
 }
 function openModal(id,dir=0){
@@ -1490,6 +1557,7 @@ function frame(){
 hero.addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;if(!raf&&!reduce)raf=requestAnimationFrame(frame);});
 hero.addEventListener('pointerleave',()=>{mx=0;my=0;if(!reduce)requestAnimationFrame(frame);});
 
+
 /* ----- burbujas / pétalos ----- */
 const cv=$('#fx'),cx=cv.getContext('2d');let P=[];
 function size(){cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;}
@@ -1506,6 +1574,7 @@ for(let i=0;i<(SMALL?20:38);i++)P.push({x:Math.random(),y:Math.random(),r:Math.r
   });
   requestAnimationFrame(loop);
 })();
+
 </script>
 </body>
 </html>
