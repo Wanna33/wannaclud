@@ -922,6 +922,125 @@ body.cz-open .hint{display:none}
 .cz-rail{min-width:0}
 .cz-stage,.cz-top,.cz-bottom{min-width:0}
 .gz-body{grid-template-columns:minmax(0,1fr)}
+
+/* =====================================================================
+   v8 · juegos nuevos, modo fiesta, barra inferior y más animaciones
+   ===================================================================== */
+.gcards{grid-template-columns:repeat(3,1fr);max-width:1020px;margin:0 auto}
+@media(max-width:900px){.gcards{grid-template-columns:repeat(2,1fr)}}
+
+/* borde dorado que gira alrededor de la tarjeta al pasar el mouse o tocarla */
+@property --ang{syntax:'<angle>';inherits:false;initial-value:0deg}
+.gcard::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;background:conic-gradient(from var(--ang),transparent 0 62%,#fff3b8 80%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s;animation:angm 3.4s linear infinite;pointer-events:none}
+.gcard:hover::after,.gcard:active::after{opacity:1}
+@keyframes angm{to{--ang:360deg}}
+.gcard,.st{will-change:transform}
+
+/* sonido en el menú */
+.sndli button{background:none;border:0;color:inherit;font:inherit;padding:4px 0;min-height:0;opacity:.85}
+.sndli button:hover{opacity:1}
+header:not(.scrolled) .sndli button{color:var(--ink)}
+
+/* tragamonedas */
+.sl-wrap{width:min(100%,430px);display:grid;gap:16px;justify-items:center}
+.sl-machine{position:relative;width:100%;padding:18px 54px 22px 18px;border-radius:30px;background:linear-gradient(160deg,#e11d48,#8e0b3a 55%,#4a0820);border:4px solid #f6d97f;box-shadow:0 24px 60px rgba(0,0,0,.65),inset 0 0 0 4px rgba(0,0,0,.25),0 0 50px rgba(225,29,72,.35)}
+.sl-top{text-align:center;font-family:'Cinzel',serif;font-weight:900;letter-spacing:.2em;color:#fff3b8;font-size:1.05rem;margin-bottom:12px;text-shadow:0 0 14px #ffb400}
+.sl-win{position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:10px;border-radius:18px;background:#0b0705;box-shadow:inset 0 0 22px #000}
+.sl-reel{position:relative;aspect-ratio:3/4;overflow:hidden;border-radius:12px;background:#fff}
+.sl-strip{will-change:transform}
+.sl-sym{aspect-ratio:3/4;display:grid;place-items:center}
+.sl-sym img{height:86%;width:auto;filter:drop-shadow(0 5px 5px rgba(0,0,0,.35))}
+.sl-reel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.45),transparent 22%,transparent 78%,rgba(0,0,0,.45));pointer-events:none}
+.sl-line{position:absolute;left:4px;right:4px;top:50%;height:3px;translate:0 -50%;background:linear-gradient(90deg,transparent,#ff3b5c,transparent);opacity:.8;pointer-events:none}
+.sl-lever{position:absolute;right:10px;top:34%;width:30px;height:110px;background:none;border:0;padding:0;min-height:0;cursor:pointer}
+.sl-lever::before{content:"";position:absolute;left:12px;top:30px;width:6px;height:70px;border-radius:3px;background:linear-gradient(90deg,#8a8a92,#fff,#8a8a92);transform-origin:50% 100%;transition:transform .35s var(--ease)}
+.sl-lever i{position:absolute;left:3px;top:0;width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ff9aa9,#e11d48 60%,#7a0a14);box-shadow:0 4px 8px rgba(0,0,0,.5);transition:transform .35s var(--ease)}
+.sl-lever.pull i{transform:translateY(78px)}
+.sl-lever.pull::before{transform:scaleY(.2)}
+.sl-btn{min-width:min(78vw,300px)}
+.sl-hint{color:var(--muted);font-size:.84rem;text-align:center}
+.sl-combo{display:flex;justify-content:center;gap:4px;margin:8px 0 2px}
+.sl-combo img{height:clamp(96px,18svh,140px);width:auto;filter:drop-shadow(0 10px 10px rgba(0,0,0,.5));animation:rpop .7s cubic-bezier(.2,.9,.3,1.25) backwards}
+.sl-combo img:nth-child(2){animation-delay:.1s}.sl-combo img:nth-child(3){animation-delay:.2s}
+
+/* trivia */
+.tv-wrap{width:min(100%,460px);display:grid;gap:14px;align-content:start}
+.tv-top{display:flex;justify-content:space-between;color:var(--muted);font-size:.82rem;letter-spacing:.06em;text-transform:uppercase}
+.tv-top b{color:var(--gold2)}
+.tv-bar{height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+.tv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));transform-origin:left}
+.tv-q{font-family:'Cinzel',serif;font-size:clamp(1.05rem,4.4vw,1.35rem);color:#fff;line-height:1.35;min-height:5.4em;padding:18px;border-radius:20px;border:1px solid var(--line);background:rgba(255,255,255,.04);text-wrap:balance}
+.tv-q.pop{animation:msgpop .5s var(--ease)}
+.tv-opts{display:grid;gap:10px}
+.tv-o{display:flex;align-items:center;gap:12px;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--silver);font-size:.95rem;transition:border-color .25s,background .25s,transform .25s var(--ease);min-height:54px}
+.tv-o:not(:disabled):hover{border-color:var(--gold);background:rgba(212,165,40,.1);transform:translateX(4px)}
+.tv-o b{width:28px;height:28px;border-radius:50%;background:var(--gold);color:#111;display:grid;place-items:center;font-size:.78rem;flex:none}
+.tv-o.ok{border-color:#2ee6a6;background:rgba(46,230,166,.18);animation:okp .45s var(--ease)}
+.tv-o.bad{border-color:#ff5c7a;background:rgba(255,92,122,.16);animation:shake .4s}
+@keyframes okp{40%{transform:scale(1.03)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+/* modo fiesta */
+#partyBtn{position:fixed;left:14px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;display:grid;justify-items:center;gap:2px;width:60px;height:60px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle at 35% 30%,#3a2b0c,#0d0a05);color:var(--gold2);padding:6px 0 0;min-height:0;box-shadow:0 6px 22px rgba(0,0,0,.55);transition:transform .25s var(--ease),box-shadow .3s}
+#partyBtn svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+#partyBtn span{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;line-height:1}
+#partyBtn:hover{transform:scale(1.08)}
+#partyBtn[aria-pressed=true]{background:linear-gradient(135deg,#ff2d95,#b57bff);color:#fff;border-color:#fff;animation:pbtn .5s ease-out infinite}
+@keyframes pbtn{0%{box-shadow:0 0 0 0 rgba(255,45,149,.7)}100%{box-shadow:0 0 0 18px rgba(255,45,149,0)}}
+body.in-hero #partyBtn{opacity:.95}
+body.cz-open #partyBtn{display:none}
+#partyfx{position:fixed;inset:0;z-index:30;pointer-events:none;mix-blend-mode:screen;overflow:hidden}
+#partyfx[hidden]{display:none}
+.pbeam{position:absolute;top:-12%;width:70vmax;height:140vmax;background:conic-gradient(from 0deg at 50% 0%,transparent 0 42%,var(--pc) 48.5%,transparent 55% 100%);opacity:.5;transform-origin:50% 0;animation:sweep 3.4s ease-in-out infinite alternate}
+.pbeam.a{left:-22%;--pc:#ff2d95}
+.pbeam.b{right:-22%;--pc:#2ee6a6;animation-delay:-1.7s;animation-direction:alternate-reverse}
+@keyframes sweep{from{rotate:-30deg}to{rotate:30deg}}
+#partyCv{position:fixed;inset:0;width:100%;height:100%;z-index:31;pointer-events:none}
+body.cz-open #partyfx,body.cz-open #partyCv{display:none}
+body.party .tilt img.idle,body.party .tilt img#pimg{animation:pbeat .5s ease-out infinite}
+@keyframes pbeat{0%{transform:scale(1.07) rotate(-1.5deg)}100%{transform:scale(1) rotate(0)}}
+body.party .dk.on .th{animation:pbeat .5s ease-out infinite}
+body.party .hleft h1 .w i{animation:shine 1.2s linear infinite}
+body.party .halo{animation-duration:.5s}
+
+/* sugerencias en el pedido */
+.sug{padding:8px 0}
+.sug small{color:var(--muted);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase}
+.sug-row{display:flex;gap:8px;margin-top:6px}
+.sug-it{position:relative;flex:1;display:grid;justify-items:center;gap:2px;padding:8px 4px 6px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.03);color:var(--silver);font-size:.68rem;transition:border-color .25s,transform .25s var(--ease);min-height:0}
+.sug-it:hover{border-color:var(--gold);transform:translateY(-3px)}
+.sug-it img{height:56px;width:auto}
+.sug-it span{line-height:1.15;text-align:center}
+.sug-it b{position:absolute;top:4px;right:6px;color:var(--gold2);font-size:1rem;line-height:1}
+
+/* barra inferior tipo app (solo celular) */
+#tabbar{display:none}
+@media(max-width:620px){
+  #tabbar{position:fixed;left:0;right:0;bottom:0;z-index:48;display:grid;grid-template-columns:repeat(5,1fr);padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));background:rgba(8,7,6,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid var(--line)}
+  .tb{position:relative;display:grid;justify-items:center;gap:2px;padding:6px 0 4px;border:0;background:none;color:var(--muted);font-size:.62rem;letter-spacing:.04em;min-height:0;transition:color .25s}
+  .tb svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+  .tb.active,.tb:active{color:var(--gold2)}
+  .tb.active svg{transform:translateY(-2px) scale(1.12)}
+  .tb.active::before{content:"";position:absolute;top:-7px;left:30%;right:30%;height:2px;border-radius:2px;background:var(--gold2)}
+  .tb b{position:absolute;top:1px;left:calc(50% + 6px);min-width:16px;height:16px;border-radius:8px;background:var(--gold);color:#111;font-size:.6rem;display:grid;place-items:center;padding:0 3px}
+  body.cz-open #tabbar{display:none}
+  header .trophy{display:none}
+  .wa{bottom:calc(82px + env(safe-area-inset-bottom,0px))!important}
+  body.has-cart .wa{bottom:calc(148px + env(safe-area-inset-bottom,0px))!important}
+  #obar{bottom:calc(74px + env(safe-area-inset-bottom,0px))}
+  #partyBtn{bottom:calc(82px + env(safe-area-inset-bottom,0px));width:54px;height:54px}
+  body.has-cart #partyBtn{bottom:calc(148px + env(safe-area-inset-bottom,0px))}
+  footer{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))!important}
+  body.has-cart footer{padding-bottom:calc(150px + env(safe-area-inset-bottom,0px))!important}
+}
+
+/* animación con el scroll (sin JavaScript) donde el navegador lo permite */
+@supports (animation-timeline:view()){
+  .fdecor img{animation:fspin var(--t,30s) linear infinite,fpar linear both;animation-timeline:auto,view();animation-range:normal,cover 0% cover 100%}
+  @keyframes fpar{from{translate:0 90px}to{translate:0 -90px}}
+  .title h2{animation:tparallax linear both;animation-timeline:view();animation-range:entry 0% entry 80%}
+  @keyframes tparallax{from{letter-spacing:.16em;opacity:.2}to{letter-spacing:.04em;opacity:1}}
+}
 </style>
 </head>
 <body>
@@ -951,6 +1070,7 @@ body.cz-open .hint{display:none}
         <li><a href="#fiestas" data-sec="fiestas">Fiestas</a></li>
         <li><a href="#faq" data-sec="faq">Preguntas</a></li>
         <li><a href="#contacto" data-sec="contacto">Contacto</a></li>
+        <li class="sndli"><button id="sndBtn" type="button" aria-pressed="false">Sonido apagado</button></li>
       </ul>
       <div class="nav-r">
         <button class="cart-btn" id="cartOpen" aria-label="Abrir pedido"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Pedido<b id="count">0</b></button>
@@ -1044,10 +1164,12 @@ body.cz-open .hint{display:none}
   <div class="wrap">
     <div class="title reveal"><small>Diversión</small><h2 data-split>Zona de juegos</h2><p>Juega, desbloquea logros y descubre tu sabor favorito</p></div>
     <div class="gcards">
-      <article class="gcard reveal" style="--d:0"><img src="img/f-orange.webp" alt="" loading="lazy"><h3>Atrapa la fruta</h3><p>Mueve la lata con el dedo y atrapa toda la fruta antes de que se acabe el tiempo.</p><div class="gbest">Récord <b data-best="catch">0</b></div><button class="btn theme" type="button" data-play="catch">Jugar</button></article>
-      <article class="gcard reveal" style="--d:1"><img src="img/f-limawedge.webp" alt="" loading="lazy"><h3>Memoria de sabores</h3><p>Encuentra las parejas de latas con los menos intentos posibles.</p><div class="gbest">Mejor <b data-best="memory">–</b></div><button class="btn theme" type="button" data-play="memory">Jugar</button></article>
-      <article class="gcard reveal" style="--d:2"><img src="img/f-passion.webp" alt="" loading="lazy"><h3>Rasca y gana</h3><p>Rasca la tarjeta dorada y descubre qué sabor te toca.</p><div class="gbest">Tarjetas <b data-best="scratch">0</b></div><button class="btn theme" type="button" data-play="scratch">Jugar</button></article>
-      <article class="gcard reveal" style="--d:3"><img src="img/f-strawhalf.webp" alt="" loading="lazy"><h3>Modo casino</h3><p>Ruleta con bola, fichas y lluvia de monedas. Sin dinero, solo diversión.</p><div class="gbest">Giros <b data-best="casino">0</b></div><button class="btn primary" type="button" data-play="casino">Entrar</button></article>
+      <article class="gcard reveal" style="--d:0"><img src="img/f-limawedge.webp" alt="" loading="lazy"><h3>Memoria de sabores</h3><p>Encuentra las parejas de latas con los menos intentos posibles.</p><div class="gbest">Mejor <b data-best="memory">–</b></div><button class="btn theme" type="button" data-play="memory">Jugar</button></article>
+      <article class="gcard reveal" style="--d:1"><img src="img/f-passion.webp" alt="" loading="lazy"><h3>Rasca y gana</h3><p>Rasca la tarjeta dorada con el dedo y descubre qué sabor te toca.</p><div class="gbest">Tarjetas <b data-best="scratch">0</b></div><button class="btn theme" type="button" data-play="scratch">Jugar</button></article>
+      <article class="gcard reveal" style="--d:2"><img src="img/f-pina.webp" alt="" loading="lazy"><h3>Trivia de sabores</h3><p>8 preguntas sobre las latas. Responde rápido y gana más puntos.</p><div class="gbest">Mejor <b data-best="trivia">0</b></div><button class="btn theme" type="button" data-play="trivia">Jugar</button></article>
+      <article class="gcard reveal" style="--d:3"><img src="img/f-berries.webp" alt="" loading="lazy"><h3>Tragamonedas</h3><p>Jala la palanca y llévate un combo sorpresa de tres sabores.</p><div class="gbest">Jugadas <b data-best="slots">0</b></div><button class="btn theme" type="button" data-play="slots">Jugar</button></article>
+      <article class="gcard reveal" style="--d:4"><img src="img/f-strawhalf.webp" alt="" loading="lazy"><h3>Modo casino</h3><p>Ruleta con bola, fichas y lluvia de monedas. Sin dinero, solo diversión.</p><div class="gbest">Giros <b data-best="casino">0</b></div><button class="btn primary" type="button" data-play="casino">Entrar</button></article>
+      <article class="gcard reveal" style="--d:5"><img src="img/f-orange.webp" alt="" loading="lazy"><h3>Atrapa la fruta</h3><p>Mueve la lata con el dedo y atrapa toda la fruta antes de que se acabe el tiempo.</p><div class="gbest">Récord <b data-best="catch">0</b></div><button class="btn theme" type="button" data-play="catch">Jugar</button></article>
     </div>
   </div>
 </section>
@@ -1220,10 +1342,21 @@ body.cz-open .hint{display:none}
     <div class="lg-grid" id="lgGrid"></div>
   </div>
 </div>
+<nav id="tabbar" aria-label="Navegación rápida">
+  <a href="#inicio" data-sec="inicio" class="tb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></svg><span>Inicio</span></a>
+  <a href="#juegos" data-sec="juegos" class="tb"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="10" rx="5"/><path d="M8 11v4M6 13h4"/><circle cx="15" cy="12" r=".8"/><circle cx="17.5" cy="14" r=".8"/></svg><span>Juegos</span></a>
+  <a href="#latas" data-sec="latas" class="tb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l1 3v11a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7z"/><path d="M6 8h12"/></svg><span>Latas</span></a>
+  <button class="tb" id="tbLogros" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6"/></svg><span>Logros</span><b id="tbLg">0</b></button>
+  <button class="tb" id="tbCart" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg><span>Pedido</span><b id="tbCount">0</b></button>
+</nav>
+<div id="partyfx" hidden aria-hidden="true"><i class="pbeam a"></i><i class="pbeam b"></i></div>
+<canvas id="partyCv" aria-hidden="true"></canvas>
+<button id="partyBtn" type="button" aria-pressed="false" aria-label="Modo fiesta"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7"/><path d="M12 6V3M5.6 9.5h12.8M5.2 13h13.6M6 16.5h12M9.5 6.6c-1.6 3-1.6 9.8 0 12.8M14.5 6.6c1.600 3 1.600 9.800 0 12.800"/></svg><span>Fiesta</span></button>
 <div id="veil"></div>
 <aside id="drawer" aria-label="Tu pedido">
   <h3>Tu pedido <button id="cartClose" aria-label="Cerrar">✕</button></h3>
   <div id="items"></div>
+  <div class="sug" id="sug"></div>
   <button class="clear" id="clear" type="button">Vaciar pedido</button>
   <input id="nombre" placeholder="Tu nombre" autocomplete="name" aria-label="Tu nombre">
   <textarea id="notas" rows="2" placeholder="Dirección o notas del pedido" aria-label="Dirección o notas"></textarea>
@@ -1306,11 +1439,15 @@ const LOGROS=[
   ['ganador','Ganador','Acierta tu ficha en el casino'],
   ['frutas','Cazador de frutas','Suma 15 puntos en Atrapa la fruta'],
   ['memoria','Memoria de elefante','Completa la Memoria de sabores'],
-  ['rasca','Rasca y gana','Revela una tarjeta dorada']
+  ['rasca','Rasca y gana','Revela una tarjeta dorada'],
+  ['slots','Jackpot','Saca tres iguales en la tragamonedas'],
+  ['combo','Combo sorpresa','Agrega el combo de la tragamonedas'],
+  ['trivia','Sabelotodo','Acierta 6 preguntas en la trivia'],
+  ['fiesta','Alma de fiesta','Activa el modo fiesta']
 ];
 let logros=store.get('logros',[]).filter(id=>LOGROS.some(l=>l[0]===id));
 function paintLogros(){
-  const n=logros.length,c=$('#lgCount');if(c)c.textContent=n;
+  const n=logros.length,c=$('#lgCount');if(c)c.textContent=n;const tl=$('#tbLg');if(tl)tl.textContent=n;
   const num=$('#lgNum');if(num){num.textContent=n;$('#lgTot').textContent=LOGROS.length;}
   const g=$('#lgGrid');
   if(g)g.innerHTML=LOGROS.map(([id,t,d])=>{const ok=logros.includes(id);return `<div class="lg-item ${ok?'ok':''}"><div class="lg-medal"><svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20"/><path d="${ok?'M24 11l3.9 8 8.8 1.3-6.4 6.2 1.5 8.8L24 31l-7.8 4.3 1.5-8.8-6.4-6.2 8.8-1.3z':'M18 22v-3a6 6 0 0 1 12 0v3M16 22h16v13H16z'}"/></svg></div><b>${t}</b><small>${d}</small></div>`;}).join('');
@@ -1319,9 +1456,58 @@ function award(id){
   if(logros.includes(id))return;
   const l=LOGROS.find(x=>x[0]===id);if(!l)return;
   logros.push(id);store.set('logros',logros);paintLogros();
-  setTimeout(()=>{toast(`Logro desbloqueado: ${l[1]}`);vib([20,40,20]);},350);
+  setTimeout(()=>{toast(`Logro desbloqueado: ${l[1]}`);vib([20,40,20]);SND.chime();},350);
   const b=$('#lgOpen');if(b){b.classList.remove('ping');void b.offsetWidth;b.classList.add('ping');}
 }
+
+
+/* =====================================================================
+   sonido de la interfaz (apagado por defecto; un solo interruptor para todo el sitio)
+   ===================================================================== */
+const SND={
+  on:store.get('snd',false),ctx:null,
+  ac(){
+    if(!this.ctx){try{this.ctx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+    const c=this.ctx;if(c&&c.state==='suspended')c.resume();return c;
+  },
+  beep(f,d,v,type,when){
+    if(!this.on)return;const a=this.ac();if(!a)return;
+    try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+(when||0);
+      o.type=type||'sine';o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(v||.05,t);g.gain.exponentialRampToValueAtTime(.001,t+(d||.08));
+      o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+(d||.08)+.02);}catch(e){}
+  },
+  pop(){this.beep(520,.07,.06,'sine');this.beep(800,.09,.05,'sine',.05);},
+  tick(){this.beep(1300+Math.random()*200,.03,.035,'square');},
+  thud(){this.beep(170,.14,.12,'sine');},
+  chime(){[784,988,1318].forEach((f,i)=>this.beep(f,.3,.07,'triangle',i*.1));},
+  win(){[523,659,784,1046,1318].forEach((f,i)=>this.beep(f,.24,.09,'triangle',i*.11));},
+  whoosh(){
+    if(!this.on)return;const a=this.ac();if(!a)return;
+    try{const len=Math.floor(a.sampleRate*.25),buf=a.createBuffer(1,len,a.sampleRate),d=buf.getChannelData(0);
+      for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);
+      const s=a.createBufferSource();s.buffer=buf;const f=a.createBiquadFilter();f.type='bandpass';f.Q.value=1.2;
+      const t=a.currentTime;f.frequency.setValueAtTime(400,t);f.frequency.exponentialRampToValueAtTime(2600,t+.22);
+      const g=a.createGain();g.gain.value=.12;s.connect(f);f.connect(g);g.connect(a.destination);s.start();}catch(e){}
+  },
+  kick(){
+    if(!this.on)return;const a=this.ac();if(!a)return;
+    try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.frequency.setValueAtTime(150,t);o.frequency.exponentialRampToValueAtTime(42,t+.14);
+      g.gain.setValueAtTime(.4,t);g.gain.exponentialRampToValueAtTime(.001,t+.2);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.22);}catch(e){}
+  },
+  hat(){
+    if(!this.on)return;const a=this.ac();if(!a)return;
+    try{const len=Math.floor(a.sampleRate*.05),buf=a.createBuffer(1,len,a.sampleRate),d=buf.getChannelData(0);
+      for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*(1-i/len);
+      const s=a.createBufferSource();s.buffer=buf;const f=a.createBiquadFilter();f.type='highpass';f.frequency.value=7000;
+      const g=a.createGain();g.gain.value=.09;s.connect(f);f.connect(g);g.connect(a.destination);s.start();}catch(e){}
+  },
+  toggle(){this.on=!this.on;store.set('snd',this.on);if(this.on){this.ac();this.pop();}this.sync();},
+  sync(){$$('#rsnd,#czSnd,#sndBtn').forEach(b=>{b.textContent=this.on?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',this.on);});}
+};
+/* los interruptores de cada módulo cambian SND.on; aquí se repintan todos */
+document.addEventListener('click',e=>{if(e.target.closest('#rsnd,#czSnd'))setTimeout(()=>SND.sync(),0);});
+{const sb=$('#sndBtn');if(sb)sb.onclick=()=>SND.toggle();}
+SND.sync();
 
 /* ----- decoración lateral: hojas, pétalos, menta, hielo ----- */
 function frond(m){
@@ -1496,7 +1682,7 @@ function onScroll(){
   hd.classList.toggle('scrolled',s>30);
   bar.style.width=(s/Math.max(1,document.body.scrollHeight-innerHeight)*100)+'%';
   if(s<innerHeight*1.3)hero.style.setProperty('--p',Math.min(1,s/(innerHeight*.9)).toFixed(3));
-  if(!reduce)$$('.fdecor').forEach(el=>{const r=el.parentElement.getBoundingClientRect();if(r.bottom>-200&&r.top<innerHeight+200)el.style.setProperty('--fy',((r.top+r.height/2-innerHeight/2)*-.1).toFixed(1)+'px');});
+  if(!reduce&&!document.documentElement.classList.contains('sd'))$('.fdecor').forEach(el=>{const r=el.parentElement.getBoundingClientRect();if(r.bottom>-200&&r.top<innerHeight+200)el.style.setProperty('--fy',((r.top+r.height/2-innerHeight/2)*-.1).toFixed(1)+'px');});
 }
 /* fruta decorativa de fondo en las secciones */
 const FPOS=[['left:-2%;top:6%',170,'1',34],['right:-3%;top:34%',150,'-1.4',40],['left:3%;bottom:4%',130,'1.8',46],['right:2%;bottom:7%',110,'-.8',30]];
@@ -1504,8 +1690,8 @@ $$('.fdecor').forEach(el=>el.dataset.f.split(',').forEach((n,i)=>{const p=FPOS[i
 addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(onScroll);}},{passive:true});
 $('#burger').onclick=()=>{const o=$('#menu').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o);};
 $$('#menu a').forEach(a=>a.addEventListener('click',()=>{$('#menu').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');}));
-const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('#menu a').forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
-['inicio','ruleta','latas','tu-sabor','como','fiestas','faq','contacto'].forEach(id=>{const el=$('#'+id);if(el)spy.observe(el);});
+const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('#menu a,#tabbar a').forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
+['inicio','ruleta','juegos','latas','tu-sabor','como','fiestas','faq','contacto'].forEach(id=>{const el=$('#'+id);if(el)spy.observe(el);});
 
 /* títulos: palabra por palabra, letra por letra */
 $('#h1').innerHTML=$('#h1').textContent.split(' ').map((w,i)=>`<span class="w"><i style="--i:${i}">${w}</i></span>`).join(' ');
@@ -1595,7 +1781,7 @@ function add(id,d=1,from=null){
   const before=Object.values(cart).reduce((s,q)=>s+q,0);
   cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];
   store.set('cart',cart);draw();
-  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);vib(12);award('pedido');milestone(before);}
+  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);vib(12);SND.pop();award('pedido');milestone(before);}
 }
 function renderActs(){
   $$('.act').forEach(el=>{
@@ -1605,24 +1791,42 @@ function renderActs(){
   });
 }
 function totals(){const ids=Object.keys(cart);return{ids,n:ids.reduce((s,i)=>s+cart[i],0),tot:ids.reduce((s,i)=>s+cart[i]*byId[i].price,0)};}
+let prevTot=0;
+function tween(el,a,b){
+  if(reduce||a===b){el.textContent=money(b)+' COP';return;}
+  const t0=performance.now(),d=450;(function f(now){const p=Math.min(1,(now-t0)/d),e=1-Math.pow(1-p,3);el.textContent=money(Math.round(a+(b-a)*e))+' COP';if(p<1)requestAnimationFrame(f);})(t0);
+}
+/* sugerencias: sabores parecidos a los que ya tienes en el pedido */
+function paintSug(ids){
+  const box=$('#sug');if(!box)return;
+  if(!ids.length){box.innerHTML='';return;}
+  const tg={};ids.forEach(i=>byId[i].tags.forEach(t=>tg[t]=(tg[t]||0)+1));
+  const pick=CANS.filter(c=>!cart[c.id]).map(c=>({c,s:c.tags.reduce((a,t)=>a+(tg[t]||0),0)})).sort((a,b)=>b.s-a.s).slice(0,3).map(x=>x.c);
+  box.innerHTML=pick.length?`<small>Prueba también</small><div class="sug-row">${pick.map(c=>`<button type="button" class="sug-it" data-sug="${c.id}" aria-label="Agregar ${c.name}"><img src="${c.thumb}" alt=""><span>${c.label}</span><b>+</b></button>`).join('')}</div>`:'';
+}
 function draw(){
   const {ids,n,tot}=totals();
   const c=$('#count'); c.textContent=n; c.classList.remove('bump'); void c.offsetWidth; c.classList.add('bump');
-  $('#ocount').textContent=n; $('#ototal').textContent=money(tot)+' COP';
+  $('#ocount').textContent=n; tween($('#ototal'),prevTot,tot);
+  const tc=$('#tbCount');if(tc)tc.textContent=n;
   document.body.classList.toggle('has-cart',n>0);
   $('#items').innerHTML=ids.length?ids.map(i=>`<div class="it"><img src="${byId[i].thumb}" alt=""><span class="n">${byId[i].name}<br><small style="color:var(--muted)">${money(byId[i].price)} COP</small></span>
-    <span class="qty"><button type="button" data-m="${i}" aria-label="Quitar uno">–</button>${cart[i]}<button type="button" data-p="${i}" aria-label="Agregar uno">+</button></span><button class="rm" type="button" data-rm="${i}" aria-label="Eliminar">✕</button></div>`).join(''):'<p class="empty">Aún no agregas nada 🍸</p>';
-  $('#total').textContent=money(tot)+' COP';
+    <span class="qty"><button type="button" data-m="${i}" aria-label="Quitar uno">–</button>${cart[i]}<button type="button" data-p="${i}" aria-label="Agregar uno">+</button></span><button class="rm" type="button" data-rm="${i}" aria-label="Eliminar">✕</button></div>`).join(''):(()=>{const l=store.get('last',null),k=l?Object.values(l).reduce((s,q)=>s+q,0):0;return '<p class="empty">Aún no agregas nada 🍸</p>'+(k?`<button class="btn ghost" type="button" data-repeat="1" style="margin:10px auto;display:flex">Repetir mi último pedido (${k})</button>`:'');})();
+  tween($('#total'),prevTot,tot);prevTot=tot;
   $('#clear').style.display=ids.length?'':'none';
+  paintSug(ids);
   renderActs();updateSend();
 }
 $('#items').addEventListener('click',e=>{
   const m=e.target.closest('[data-m]'),p=e.target.closest('[data-p]'),r=e.target.closest('[data-rm]');
   if(m)add(m.dataset.m,-1);else if(p)add(p.dataset.p,1);else if(r){delete cart[r.dataset.rm];store.set('cart',cart);draw();}
+  else if(e.target.closest('[data-repeat]')){const l=store.get('last',{});cart=Object.fromEntries(Object.entries(l).filter(([k,v])=>byId[k]&&v>0));store.set('cart',cart);draw();toast('Pedido anterior cargado');}
 });
+$('#sug').addEventListener('click',e=>{const b=e.target.closest('[data-sug]');if(b)add(b.dataset.sug,1,b);});
 $('#clear').onclick=()=>{cart={};store.set('cart',cart);draw();toast('Pedido vaciado');};
 const openCart=o=>{$('#drawer').classList.toggle('open',o);$('#veil').classList.toggle('on',o);};
 $('#cartOpen').onclick=()=>openCart(true);$('#oopen').onclick=()=>openCart(true);
+{const tc=$('#tbCart'),tl=$('#tbLogros');if(tc)tc.onclick=()=>openCart(true);if(tl)tl.onclick=()=>$('#lgOpen').click();}
 $('#cartClose').onclick=()=>openCart(false);$('#veil').onclick=()=>openCart(false);
 const form0=store.get('form',{});$('#nombre').value=form0.n||'';$('#notas').value=form0.t||'';
 function orderHref(){
@@ -1633,7 +1837,7 @@ function orderHref(){
 }
 function updateSend(){$('#send').href=orderHref();store.set('form',{n:$('#nombre').value,t:$('#notas').value});}
 $('#nombre').addEventListener('input',updateSend);$('#notas').addEventListener('input',updateSend);
-$('#send').addEventListener('click',e=>{if(!Object.keys(cart).length){e.preventDefault();toast('Agrega algo a tu pedido primero');}else updateSend();});
+$('#send').addEventListener('click',e=>{if(!Object.keys(cart).length){e.preventDefault();toast('Agrega algo a tu pedido primero');}else{updateSend();store.set('last',{...cart});}});
 
 /* enlaces de WhatsApp y datos de contacto */
 ['#wa','#cWa'].forEach(s=>{const a=$(s);a.href=wa('Hola WannaClud, quiero información.');a.target='_blank';});
@@ -1860,7 +2064,7 @@ function crossfade(){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{o.style.opacity='0';}));setTimeout(()=>o.remove(),750);
 }
 function applyFlavor(i,noImg){
-  cur=i;seen.add(i);if(seen.size>=N)award('coleccion');const c=CANS[i];
+  cur=i;SND.tick();seen.add(i);if(seen.size>=N)award('coleccion');const c=CANS[i];
   $$('.dk').forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.remove('auto');});
   if(!manual)requestAnimationFrame(()=>$$('.dk')[i].classList.add('auto'));
   centerDock(i);
@@ -1947,7 +2151,7 @@ $('#surprise').onclick=e=>{let j;do{j=Math.floor(Math.random()*N);}while(j===cur
     [gp,gn].forEach(g=>g.style.transition=`translate ${TR},scale ${TR},opacity ${TR},rotate ${TR}`);
     if(!go){main.style.translate='0 0';main.style.rotate='0deg';main.style.scale='1';main.style.opacity='1';rest(true);return;}
     const dir=dx<0?1:-1,j=dir>0?idxN():idxP(),near=dir>0?gn:gp,far=dir>0?gp:gn;
-    manual=true;clearTimeout(tm);$$('.dk').forEach(q=>q.classList.remove('auto'));busy=true;vib(10);
+    manual=true;clearTimeout(tm);$('.dk').forEach(q=>q.classList.remove('auto'));busy=true;vib(10);SND.whoosh();
     preload(CANS[(j+1)%N].img);preload(CANS[(j-1+N)%N].img);
     applyFlavor(j,true);
     main.style.translate=`${-dir*x*1.1}px 0`;main.style.rotate=`${-dir*12}deg`;main.style.scale=String(SC);main.style.opacity='0';
@@ -1991,18 +2195,18 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   const hi=CANS.map(()=>null);
   const logo=new Image();logo.src='img/logo-s.webp';
   let dpr=1,S=0,ang=0,vel=0,state='idle',lastK=null,visible=false,running=false,lastT=0,drag=null,count=0,winUntil=0,settle=null,loadedHi=false;
-  let snd=store.get('snd',false),actx=null;
+  let actx=null;
 
   /* ---- sonido (apagado por defecto) ---- */
   function ac(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return actx;}
   function beep(f,dur,vol,type){
-    if(!snd)return;const a=ac();if(!a)return;
+    if(!SND.on)return;const a=ac();if(!a)return;
     try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(vol||.05,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur);}catch(e){}
   }
   const tickS=()=>beep(1100+Math.random()*250,.035,.05);
   const winS=()=>[660,880,1100,1320].forEach((f,i)=>setTimeout(()=>beep(f,.2,.09,'triangle'),i*120));
-  function paintSnd(){const b=$('#rsnd');b.textContent=snd?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',snd);}
-  $('#rsnd').onclick=()=>{snd=!snd;store.set('snd',snd);paintSnd();if(snd){ac();tickS();}};
+  function paintSnd(){const b=$('#rsnd');b.textContent=SND.on?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',SND.on);}
+  $('#rsnd').onclick=()=>{SND.on=!SND.on;store.set('snd',SND.on);paintSnd();if(SND.on){ac();tickS();}};
   paintSnd();
 
   /* ---- tamaño y dibujo ---- */
@@ -2079,7 +2283,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     $('#rres').classList.remove('ready');
     if(reduce){const i=Math.floor(Math.random()*N);ang=-i*step;finish();draw(performance.now());return;}
     vel=v0||(16+Math.random()*9);state='spin';btn.disabled=true;vib([12,40,12]);
-    if(snd)ac();loadHi();kick();
+    if(SND.on)ac();loadHi();kick();
   }
   function finish(){
     btn.disabled=false;vel=0;lastK=null;
@@ -2154,20 +2358,20 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   const TAU=Math.PI*2,step=TAU/N;
   const thumbs=CANS.map(c=>{const i=new Image();i.src=c.thumb;return i;});
   let S=0,dpr=1,W=0,B=0,state='idle',bet=null,spins=0,hits=0,winIdx=null,shot=null,isOpen=false,raf=0,lastT=0;
-  let snd=store.get('snd',false),actx=null,lastDef=null,lastPk=null,lastBounce=-1,glow=0;
+  let actx=null,lastDef=null,lastPk=null,lastBounce=-1,glow=0;
   const coins=[];
 
   /* ---------- sonido ---------- */
   function ac(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return actx;}
   function beep(f,dur,vol,type){
-    if(!snd)return;const a=ac();if(!a)return;
+    if(!SND.on)return;const a=ac();if(!a)return;
     try{const o=a.createOscillator(),gn=a.createGain(),t=a.currentTime;o.type=type||'square';o.frequency.value=f;gn.gain.setValueAtTime(vol||.05,t);gn.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(gn);gn.connect(a.destination);o.start(t);o.stop(t+dur);}catch(e){}
   }
   const click=()=>beep(1500+Math.random()*300,.03,.04);
   const thud=()=>beep(220,.12,.12,'sine');
   const jingle=()=>[523,659,784,1046,1318].forEach((f,i)=>setTimeout(()=>beep(f,.22,.09,'triangle'),i*110));
-  function paintSnd(){const b=$('#czSnd');b.textContent=snd?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',snd);}
-  $('#czSnd').onclick=()=>{snd=!snd;store.set('snd',snd);paintSnd();if(snd){ac();click();}};
+  function paintSnd(){const b=$('#czSnd');b.textContent=SND.on?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',SND.on);}
+  $('#czSnd').onclick=()=>{SND.on=!SND.on;store.set('snd',SND.on);paintSnd();if(SND.on){ac();click();}};
   paintSnd();
 
   /* ---------- fichas ---------- */
@@ -2288,7 +2492,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     winIdx=Math.floor(Math.random()*N);state='spin';lastDef=null;lastPk=null;lastBounce=-1;glow=0;
     $('#czSpin').disabled=true;$$('.cz-chip').forEach(x=>x.disabled=true);
     msg(bet===null?'¡No va más!':`¡No va más! Tu ficha: ${CANS[bet].name}`);vib([14,40,14]);
-    if(snd)ac();
+    if(SND.on)ac();
     const Tm=reduce?1:7400,pd=.8;
     const W0=W,dW=TAU*(2.2+Math.random()*.8),Wpd=W0+dW*eo(pd);
     const delta=(Math.random()<.5?-1:1)*step*(.4+Math.random()*.9);
@@ -2382,7 +2586,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   const loadImg=src=>imgCache[src]||(imgCache[src]=new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(i);i.src=src;}));
   function paintBest(){
     const set=(k,v)=>{const e=document.querySelector(`[data-best="${k}"]`);if(e)e.textContent=v;};
-    set('catch',best.catch||0);set('memory',best.memory?best.memory+' intentos':'–');set('scratch',best.scratch||0);set('casino',(store.get('cz',{spins:0}).spins)||0);
+    set('catch',best.catch||0);set('memory',best.memory?best.memory+' intentos':'–');set('scratch',best.scratch||0);set('trivia',best.trivia||0);set('slots',store.get('slotSpins',0)||0);set('casino',(store.get('cz',{spins:0}).spins)||0);
   }
   paintBest();
 
@@ -2393,7 +2597,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     gz.hidden=false;document.body.classList.add('cz-open');document.body.style.overflow='hidden';
     requestAnimationFrame(()=>gz.classList.add('show'));
     active={name,stop:null};
-    ({catch:gCatch,memory:gMemory,scratch:gScratch})[name]();
+    GAMES[name]();
   }
   function close(){
     if(!active)return;
@@ -2410,8 +2614,11 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   $('#gzExit').onclick=close;
   addEventListener('keydown',e=>{if(active&&e.key==='Escape'){e.stopImmediatePropagation();close();}},true);
   res.addEventListener('click',e=>{
-    const a=e.target.closest('[data-again]');if(a){const n=active.name;if(active.stop)active.stop();active=null;res.hidden=true;body.innerHTML='';active={name:n,stop:null};({catch:gCatch,memory:gMemory,scratch:gScratch})[n]();return;}
-    if(e.target.closest('[data-exit]'))close();
+    const a=e.target.closest('[data-again]');if(a){const n=active.name;if(active.stop)active.stop();active=null;res.hidden=true;body.innerHTML='';active={name:n,stop:null};GAMES[n]();return;}
+    if(e.target.closest('[data-exit]')){close();return;}
+    if(e.target.closest('[data-slspin]')){res.hidden=true;if(active&&active.spin)active.spin();return;}
+    const cb=e.target.closest('[data-combo]');
+    if(cb&&active&&active.last){active.last.forEach((i,k)=>add(CANS[i].id,1,k===0?cb:null));award('combo');cb.textContent='¡Agregado al pedido!';cb.disabled=true;}
   });
 
   /* =============== Atrapa la fruta =============== */
@@ -2561,6 +2768,142 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     card();
     active.stop=()=>{};
   }
+
+  /* =============== Tragamonedas =============== */
+  function gSlots(){
+    title.textContent='Tragamonedas';
+    body.innerHTML=`<div class="sl-wrap"><div class="sl-machine"><div class="sl-top">WANNA SLOTS</div>
+      <div class="sl-win" id="slWin"><div class="sl-reel"><div class="sl-strip"></div></div><div class="sl-reel"><div class="sl-strip"></div></div><div class="sl-reel"><div class="sl-strip"></div></div><i class="sl-line"></i></div>
+      <button class="sl-lever" id="slLever" type="button" aria-label="Jalar la palanca"><i></i></button></div>
+      <button class="cz-spin sl-btn" id="slBtn" type="button">JALAR</button>
+      <p class="sl-hint">Tres sabores iguales son jackpot. Si no, llévate el combo que salga.</p></div>`;
+    const reels=[...$$('.sl-reel')],strips=reels.map(r=>r.firstElementChild);
+    const cur3=[0,1,2].map(()=>Math.floor(Math.random()*N));
+    let spinning=false,tk=0;
+    const sym=i=>`<div class="sl-sym" style="background:linear-gradient(160deg,${CANS[i].t.hb1},${CANS[i].t.hb2})"><img src="${CANS[i].thumb}" alt="${CANS[i].name}"></div>`;
+    const rest=()=>strips.forEach((s,k)=>{s.getAnimations().forEach(a=>a.cancel());s.style.transform='translateY(0)';s.innerHTML=sym(cur3[k]);});
+    rest();
+    function spin(){
+      if(spinning)return;spinning=true;res.hidden=true;$('#slBtn').disabled=true;
+      const lv=$('#slLever');lv.classList.add('pull');setTimeout(()=>lv.classList.remove('pull'),650);
+      vib([14,40,14]);SND.pop();
+      const H=reels[0].clientHeight,tg=[0,1,2].map(()=>Math.floor(Math.random()*N));let done=0;
+      clearInterval(tk);tk=setInterval(()=>SND.tick(),110);
+      strips.forEach((s,k)=>{
+        const len=20+k*10,seq=[cur3[k]];for(let i=0;i<len;i++)seq.push(Math.floor(Math.random()*N));seq.push(tg[k]);
+        s.innerHTML=seq.map(sym).join('');
+        const dist=-(seq.length-1)*H;
+        const an=s.animate([{transform:'translateY(0)'},{transform:`translateY(${dist}px)`}],{duration:reduce?60:1800+k*700,easing:'cubic-bezier(.15,.75,.25,1)',fill:'forwards'});
+        an.onfinish=()=>{cur3[k]=tg[k];SND.thud();vib(8);if(++done===3){spinning=false;clearInterval(tk);rest();endSpin();}};
+      });
+    }
+    function endSpin(){
+      const [a,b,c]=cur3,jackpot=a===b&&b===c,pair=!jackpot&&(a===b||b===c||a===c);
+      active.last=cur3.slice();
+      store.set('slotSpins',(store.get('slotSpins',0)||0)+1);paintBest();
+      if(jackpot){award('slots');SND.win();vib([30,60,30,60,120]);if(!reduce){fruitBurst($('#slBtn'),CANS[a].id);setTimeout(()=>fruitBurst($('#slBtn'),CANS[a].id),150);}}
+      showRes(`<div class="gz-win ${jackpot?'hit':''}">${jackpot?'¡JACKPOT!':pair?'¡Pareja!':'Tu combo'}</div><small>${jackpot?'Tres '+CANS[a].name:cur3.map(i=>CANS[i].label).join(' · ')}</small>
+        <div class="sl-combo">${cur3.map(i=>`<img src="${CANS[i].img}" alt="${CANS[i].name}">`).join('')}</div>
+        <div class="qrow"><button class="btn theme" type="button" data-combo="1">Agregar los 3 · ${money(PRECIO*3)} COP</button></div>
+        <div class="qrow"><button class="btn ghost" type="button" data-slspin="1">↻ Jalar otra vez</button><button class="btn ghost" type="button" data-exit="1">Salir</button></div>`);
+      $('#slBtn').disabled=false;
+    }
+    $('#slBtn').onclick=spin;$('#slLever').onclick=spin;
+    active.spin=spin;active.stop=()=>{clearInterval(tk);};
+  }
+
+  /* =============== Trivia de sabores =============== */
+  function gTrivia(){
+    title.textContent='Trivia de sabores';
+    const catName={tropical:'Tropicales',clasico:'Clásicos',frutal:'Frutales',tamarindo:'Tamarindo'},cats=Object.values(catName);
+    const qs=[];
+    shuffle([...CANS]).slice(0,4).forEach(c=>{const o=shuffle([c,...shuffle(CANS.filter(x=>x.id!==c.id)).slice(0,3)]);qs.push({q:`¿Qué lata es esta? “${c.desc}”`,o:o.map(x=>x.name),a:o.indexOf(c)});});
+    shuffle([...CANS]).slice(0,3).forEach(c=>{const o=shuffle([...cats]);qs.push({q:`¿En qué grupo del catálogo está ${c.name}?`,o,a:o.indexOf(catName[c.cat])});});
+    {const pr=shuffle(['$20.000','$25.000','$30.000','$35.000']);qs.push({q:'¿Cuánto cuesta cada lata de WannaClud?',o:pr,a:pr.indexOf('$25.000')});}
+    shuffle(qs);
+    let i=0,score=0,right=0,streak=0,tl=12,tmr=0,lock=false;
+    body.innerHTML=`<div class="tv-wrap"><div class="tv-top"><span>Pregunta <b id="tvN">1</b>/8</span><span>Aciertos <b id="tvR">0</b></span></div><div class="tv-bar"><i id="tvBar"></i></div><div class="tv-q" id="tvQ"></div><div class="tv-opts" id="tvO"></div></div>`;
+    function show(){
+      const q=qs[i];lock=false;tl=12;$('#tvN').textContent=i+1;
+      const tq=$('#tvQ');tq.textContent=q.q;tq.classList.remove('pop');void tq.offsetWidth;tq.classList.add('pop');
+      $('#tvO').innerHTML=q.o.map((t,k)=>`<button type="button" class="tv-o" data-k="${k}"><b>${'ABCD'[k]}</b>${t}</button>`).join('');
+      const bar=$('#tvBar');bar.style.transition='none';bar.style.transform='scaleX(1)';void bar.offsetWidth;bar.style.transition='transform 12s linear';bar.style.transform='scaleX(0)';
+      clearInterval(tmr);const t0=performance.now();tmr=setInterval(()=>{tl=12-(performance.now()-t0)/1000;if(tl<=0){clearInterval(tmr);answer(-1);}},100);
+    }
+    function answer(k){
+      if(lock)return;lock=true;clearInterval(tmr);const q=qs[i],ok=k===q.a;
+      $$('.tv-o').forEach((b,j)=>{b.disabled=true;if(j===q.a)b.classList.add('ok');else if(j===k)b.classList.add('bad');});
+      if(ok){right++;streak++;score+=100+Math.round(Math.max(0,tl)*10)+streak*20;SND.pop();vib(12);}else{streak=0;SND.thud();vib([30,40,30]);}
+      $('#tvR').textContent=right;scoreEl.textContent=`${score} pts`;
+      setTimeout(()=>{if(++i>=qs.length)end();else show();},1100);
+    }
+    $('#tvO').addEventListener('click',e=>{const b=e.target.closest('.tv-o');if(b)answer(+b.dataset.k);});
+    function end(){
+      const nuevo=score>(best.trivia||0);if(nuevo){best.trivia=score;store.set('best',best);}
+      if(right>=6)award('trivia');
+      const msg=right>=8?'¡Perfecto! Sabes todo de WannaClud':right>=6?'¡Gran conocedor de sabores!':right>=4?'¡Nada mal!':'¡A probar más sabores!';
+      if(right>=6){SND.win();vib([30,60,30,60,100]);}
+      showRes(`<div class="gz-win ${nuevo?'hit':''}">${nuevo?'¡Nuevo récord!':'Resultado'}</div><small>${msg}</small><div class="gz-big">${right}/8</div><small>${score} puntos · récord ${Math.max(score,best.trivia||0)}</small>
+        <div class="qrow"><button class="btn theme" type="button" data-again="1">↻ Jugar otra vez</button><button class="btn ghost" type="button" data-exit="1">Salir</button></div>`);
+      if(right>=6&&!reduce)fruitBurst($('#gzExit'),CANS[cur].id);
+    }
+    show();
+    active.stop=()=>clearInterval(tmr);
+  }
+  const GAMES={catch:gCatch,memory:gMemory,scratch:gScratch,slots:gSlots,trivia:gTrivia};
+})();
+
+
+/* =====================================================================
+   modo fiesta: luces, confeti, latidos al ritmo y cambio automático de sabor
+   ===================================================================== */
+(function(){
+  const btn=$('#partyBtn'),fx=$('#partyfx'),cv=$('#partyCv');
+  if(!btn||!cv)return;
+  const g=cv.getContext('2d'),COLS=['#ff2d95','#ffd23f','#2ee6a6','#4db8ff','#ff8a2b','#b57bff'];
+  let on=false,flavorT=0,beatT=0,raf=0,step=0,parts=[],lastT=0;
+  function size(){cv.width=innerWidth;cv.height=innerHeight;}
+  function spawn(){parts.push({x:Math.random()*cv.width,y:-12,vx:(Math.random()-.5)*70,vy:90+Math.random()*150,w:6+Math.random()*7,h:10+Math.random()*10,rot:Math.random()*6,vr:(Math.random()-.5)*8,c:COLS[Math.random()*COLS.length|0]});}
+  function loop(ts){
+    if(!on){raf=0;g.clearRect(0,0,cv.width,cv.height);return;}
+    const dt=Math.min(.05,(ts-lastT)/1000||.016);lastT=ts;
+    g.clearRect(0,0,cv.width,cv.height);
+    if(!document.body.classList.contains('cz-open')){
+      if(Math.random()<dt*(SMALL?14:26))spawn();
+      for(let i=parts.length-1;i>=0;i--){
+        const p=parts[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.rot+=p.vr*dt;
+        if(p.y>cv.height+20){parts.splice(i,1);continue;}
+        g.save();g.translate(p.x,p.y);g.rotate(p.rot);g.scale(1,Math.abs(Math.cos(p.rot*1.7))*.8+.2);g.fillStyle=p.c;g.fillRect(-p.w/2,-p.h/2,p.w,p.h);g.restore();
+      }
+    }
+    raf=requestAnimationFrame(loop);
+  }
+  function beat(){
+    if(SND.on){
+      if(step%4===0)SND.kick();
+      if(step%2===1)SND.hat();
+      if(step%8===6)SND.beep(196,.14,.05,'sawtooth');
+      if(step%16===0)SND.beep(392,.12,.04,'triangle');
+    }
+    step=(step+1)%16;
+  }
+  function start(){
+    on=true;document.body.classList.add('party');size();fx.hidden=false;
+    btn.setAttribute('aria-pressed','true');btn.querySelector('span').textContent='Parar';
+    toast('¡Modo fiesta activado!');vib([20,40,20,40,80]);award('fiesta');
+    if(!reduce){lastT=performance.now();raf=requestAnimationFrame(loop);}
+    flavorT=setInterval(()=>{if(!document.body.classList.contains('cz-open')&&!mOpen&&!busy){manual=true;setFlavor((cur+1)%N,null);}},3400);
+    beatT=setInterval(beat,250);
+    if(!SND.on)setTimeout(()=>{if(on)toast('Activa el sonido en el menú para escuchar el ritmo');},2400);
+  }
+  function stop(){
+    on=false;document.body.classList.remove('party');fx.hidden=true;parts.length=0;g.clearRect(0,0,cv.width,cv.height);
+    btn.setAttribute('aria-pressed','false');btn.querySelector('span').textContent='Fiesta';
+    clearInterval(flavorT);clearInterval(beatT);
+  }
+  btn.onclick=()=>on?stop():start();
+  addEventListener('resize',()=>{if(on)size();});
+  addEventListener('keydown',e=>{if(on&&e.key==='Escape'&&!document.body.classList.contains('cz-open'))stop();});
 })();
 
 
@@ -2625,6 +2968,16 @@ if('serviceWorker' in navigator&&location.protocol==='https:'){
   addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
 }
 
+/* ---- tarjetas de juegos con inclinación al pasar el mouse ---- */
+if(fine&&!reduce){
+  $$('.gcard,.st').forEach(card=>{
+    card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;card.style.transform=`perspective(800px) rotateY(${(x-.5)*10}deg) rotateX(${(.5-y)*8}deg) translateY(-6px)`;});
+    card.addEventListener('mouseleave',()=>{card.style.transform='';});
+  });
+}
+/* ---- si el navegador sabe animar con el scroll, la fruta de fondo se mueve sin gastar CPU ---- */
+if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))document.documentElement.classList.add('sd');
+
 /* =====================================================================
    arranque
    ===================================================================== */
@@ -2649,6 +3002,21 @@ function frame(){
 }
 hero.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||reduce)return;mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;if(!raf)raf=requestAnimationFrame(frame);});
 hero.addEventListener('pointerleave',()=>{mx=0;my=0;if(!reduce&&!raf)raf=requestAnimationFrame(frame);});
+
+/* ----- movimiento con el giroscopio del celular (la lata y las frutas se mueven al inclinar el teléfono) ----- */
+if(!fine&&!reduce&&'DeviceOrientationEvent' in window){
+  let gx=0,gy=0,tgx=0,tgy=0,gon=false,gr=0;
+  const gstep=()=>{gr=0;gx+=(tgx-gx)*.1;gy+=(tgy-gy)*.1;mx=gx;my=gy;frame();if(Math.abs(tgx-gx)+Math.abs(tgy-gy)>.004)gr=requestAnimationFrame(gstep);};
+  const onOri=e=>{
+    if(e.gamma==null||!heroVis||document.body.classList.contains('cz-open'))return;
+    tgx=Math.max(-.5,Math.min(.5,e.gamma/40));tgy=Math.max(-.5,Math.min(.5,(e.beta-55)/45));
+    if(!gr)gr=requestAnimationFrame(gstep);
+  };
+  const enableGyro=()=>{if(gon)return;gon=true;addEventListener('deviceorientation',onOri,true);};
+  if(typeof DeviceOrientationEvent.requestPermission==='function'){
+    hero.addEventListener('click',()=>{DeviceOrientationEvent.requestPermission().then(r=>{if(r==='granted')enableGyro();}).catch(()=>{});},{once:true});
+  }else enableGyro();
+}
 
 /* ----- burbujas / pétalos ----- */
 const cv=$('#fx'),cx=cv.getContext('2d');let P=[];
