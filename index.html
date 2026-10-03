@@ -7,10 +7,10 @@
 <meta name="description" content="WannaClud Cócteles: cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
 <meta property="og:title" content="WannaClud Cócteles">
 <meta property="og:description" content="Cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
-<meta property="og:image" content="logo.webp">
-<link rel="icon" href="logo-s.webp">
-<link rel="preload" as="image" href="logo.webp">
-<link rel="preload" as="image" href="coco.webp">
+<meta property="og:image" content="img/logo.webp">
+<link rel="icon" href="img/logo-s.webp">
+<link rel="preload" as="image" href="img/logo.webp">
+<link rel="preload" as="image" href="img/coco.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -631,7 +631,7 @@ footer nav a:hover{color:var(--gold2)}
   <div class="in-spark" id="spark"></div>
   <div class="in-box">
     <div class="in-glow"></div>
-    <img id="introLogo" src="logo.webp" alt="WannaClud Cócteles">
+    <img id="introLogo" src="img/logo.webp" alt="WannaClud Cócteles">
     <div class="in-bar"><i id="inbar"></i></div>
     <p class="in-pct" id="inpct">0%</p>
   </div>
@@ -651,7 +651,7 @@ footer nav a:hover{color:var(--gold2)}
 <header id="hd">
   <div class="wrap">
     <nav>
-      <a href="#inicio" class="brand" aria-label="WannaClud Cócteles, inicio"><img src="logo-s.webp" alt="WannaClud Cócteles"></a>
+      <a href="#inicio" class="brand" aria-label="WannaClud Cócteles, inicio"><img src="img/logo-s.webp" alt="WannaClud Cócteles"></a>
       <ul id="menu">
         <li><a href="#inicio" data-sec="inicio">Inicio</a></li>
         <li><a href="#latas" data-sec="latas">Latas</a></li>
@@ -694,7 +694,7 @@ footer nav a:hover{color:var(--gold2)}
     <div class="stage rv" style="--d:.3s" id="stage">
       <div class="halo"></div>
       <button class="arrow l" id="prev" aria-label="Sabor anterior">‹</button>
-      <div class="tilt" id="tilt"><img id="pimg" src="coco.webp" alt="Buchanan's Coco" width="709" height="1086" fetchpriority="high"></div>
+      <div class="tilt" id="tilt"><img id="pimg" src="img/coco.webp" alt="Buchanan's Coco" width="709" height="1086" fetchpriority="high"></div>
       <button class="arrow r" id="next" aria-label="Sabor siguiente">›</button>
     </div>
 
@@ -825,7 +825,7 @@ footer nav a:hover{color:var(--gold2)}
 </main>
 
 <footer>
-  <img src="logo.webp" alt="WannaClud Cócteles">
+  <img src="img/logo.webp" alt="WannaClud Cócteles">
   <nav aria-label="Pie de página"><a href="#latas">Latas</a><a href="#tu-sabor">Tu sabor</a><a href="#como">Cómo pedir</a><a href="#fiestas">Fiestas</a><a href="#faq">Preguntas</a><a href="#contacto">Contacto</a></nav>
   <small>© <span id="y"></span> WannaClud Cócteles · WhatsApp +57 310 203 5327</small>
   <small>Bebe con responsabilidad. Prohibida la venta a menores de edad.</small>
@@ -908,7 +908,7 @@ const CANS = [
  {id:"sangria",cat:"frutal",   tags:["frutal","dulce","intenso"],                  col:"rosa",     short:"Sangría",   label:"Sangría Coqueta", name:"Sangría Coqueta",      chips:CH_N,                          desc:"Sangría frutal de fresa, cereza y naranja, fresca y coqueta.",                  leaves:"sangria",sprite:["strawberry","orange"], pc:{f:"255,205,205",s:"130,10,20",petal:1},
   t:T('#ffe6e6','#ff6262','#b3121f','#ff4d4d','#ffd6d6','#7a0a14','#4a0509','#7a1d24','#a50e1c','rgba(130,10,20,.45)','rgba(130,10,20,.55)')}
 ];
-CANS.forEach(c=>{c.price=PRECIO;c.img=`${c.id}.webp`;c.card=`m-${c.id}.webp`;c.thumb=`t-${c.id}.webp`;});
+CANS.forEach(c=>{c.price=PRECIO;c.img=`img/${c.id}.webp`;c.card=`img/m-${c.id}.webp`;c.thumb=`img/t-${c.id}.webp`;});
 /* ======================================== */
 
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
@@ -1059,7 +1059,7 @@ function runIntro(){
   if(!it||reduce){if(it)it.remove();document.body.classList.add('logo-in');if(!$('#age'))start();return;}
   const sp=$('#spark');
   for(let i=0;i<18;i++){const e=document.createElement('i');e.style.cssText=`left:${(Math.random()*100).toFixed(1)}%;--t:${(4+Math.random()*4).toFixed(1)}s;--dl:${(-Math.random()*6).toFixed(1)}s;--dx:${(Math.random()*80-40).toFixed(0)}px;width:${(3+Math.random()*4).toFixed(1)}px;height:${(3+Math.random()*4).toFixed(1)}px`;sp.appendChild(e);}
-  const srcs=['logo.webp',CANS[0].img,...CANS.map(c=>c.thumb)];
+  const srcs=['img/logo.webp',CANS[0].img,...CANS.map(c=>c.thumb)];
   let n=0,shown=0,fin=false;const tot=srcs.length+1,t0=performance.now();
   srcs.forEach(s=>preload(s).then(()=>n++));
   Promise.race([document.fonts?document.fonts.ready:Promise.resolve(),new Promise(r=>setTimeout(r,3000))]).then(()=>n++);
