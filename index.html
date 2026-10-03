@@ -7,13 +7,24 @@
 <meta name="description" content="WannaClud Cócteles: cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
 <meta property="og:title" content="WannaClud Cócteles">
 <meta property="og:description" content="Cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
-<meta property="og:image" content="img/logo.webp">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wanna33.github.io/wannaclud/">
+<meta property="og:image" content="https://wanna33.github.io/wannaclud/img/logo.webp">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/logo-s.webp">
 <link rel="preload" as="image" href="img/logo.webp">
 <link rel="preload" as="image" href="img/coco.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#080706">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://wanna33.github.io/wannaclud/">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="WannaClud">
 <noscript><style>#intro{display:none}</style></noscript>
 <style>
 :root{
@@ -652,6 +663,74 @@ footer nav a:hover{color:var(--gold2)}
 @media(max-width:620px){.fdecor img{opacity:.32;width:calc(var(--w,150px)*.6)}}
 .m-stage img.mfr{height:auto;max-width:none;width:var(--w,70px);filter:drop-shadow(0 12px 12px rgba(0,0,0,.3))}
 @media(max-width:760px){.m-stage img.mfr{width:calc(var(--w,70px)*.7)}}
+
+/* =====================================================================
+   v5 · latas más grandes, deslizar con el dedo y ruleta
+   ===================================================================== */
+.tilt img{height:min(58vh,560px)}
+.can-card{padding-top:220px}
+.can-card>img{height:325px;top:-112px}
+.cans{margin-top:130px;gap:140px 22px}
+.m-stage img#mimg{height:min(58vh,480px)}
+@media(max-width:980px){.tilt img{height:min(46vh,420px)}}
+@media(max-width:760px){.m-stage img#mimg{height:min(36svh,300px)}}
+@media(max-width:620px){
+  .tilt img{height:clamp(190px,calc(100svh - 420px),400px)}
+  .can-card{padding-top:138px}
+  .can-card>img{height:205px;top:-78px}
+  .cans{gap:112px 12px;margin-top:110px}
+}
+
+/* carrusel: la lata sigue al dedo y la siguiente entra desde el lado */
+.stage{cursor:grab;user-select:none;-webkit-user-select:none}
+.stage.dragging{cursor:grabbing}
+.tilt{touch-action:pan-y}
+.tilt img{-webkit-user-drag:none;user-select:none}
+.tilt img.ghost{position:absolute;left:50%;top:50%;margin:0;translate:-50% -50%;pointer-events:none;opacity:0;visibility:hidden;will-change:transform,opacity}
+#pimg{will-change:translate,rotate,scale,opacity}
+.hint{display:none;position:absolute;left:50%;bottom:-4px;translate:-50% 0;z-index:6;align-items:center;gap:12px;background:rgba(0,0,0,.6);color:#fff;border-radius:999px;padding:7px 18px;font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;backdrop-filter:blur(6px);pointer-events:none;opacity:0}
+.hint i{font-style:normal;font-size:1.2rem;line-height:1;display:inline-block;animation:swipe 1.1s ease-in-out infinite}
+.hint i:last-child{animation-direction:reverse}
+@keyframes swipe{0%,100%{transform:translateX(-6px)}50%{transform:translateX(6px)}}
+@keyframes hinty{0%{opacity:0}15%,85%{opacity:1}100%{opacity:0}}
+@media(hover:none){.hint.show{display:flex;animation:hinty 2.6s ease-in-out 3 forwards 1.2s}}
+
+/* ruleta de casino */
+#ruleta{background:radial-gradient(70% 60% at 50% 40%,#2a1a05,#0d0a05 72%)}
+.rwrap{display:grid;grid-template-columns:minmax(0,520px) 1fr;gap:56px;align-items:center;max-width:1040px;margin:0 auto}
+.rbox{position:relative;width:100%;aspect-ratio:1;max-width:520px;margin:0 auto;border-radius:50%;box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 90px rgba(212,165,40,.22);user-select:none;-webkit-user-select:none}
+.rbox canvas{position:absolute;inset:0;width:100%;height:100%;display:block;border-radius:50%;cursor:grab;touch-action:pan-y}
+.rbox.grabbing canvas{cursor:grabbing}
+.rptr{position:absolute;left:50%;top:-16px;width:48px;height:66px;translate:-50% 0;z-index:4;transform-origin:50% 16%;filter:drop-shadow(0 6px 6px rgba(0,0,0,.65));pointer-events:none}
+.rptr::before{content:"";position:absolute;inset:0;background:linear-gradient(160deg,#fff3b8,#d4a528 55%,#8a5f10);clip-path:polygon(50% 100%,0 22%,10% 5%,50% 0,90% 5%,100% 22%)}
+.rptr::after{content:"";position:absolute;left:50%;top:15%;width:13px;height:13px;border-radius:50%;translate:-50% 0;background:radial-gradient(circle at 35% 35%,#fff,#e11d48 60%)}
+.rptr.flick{animation:flick .15s ease-out}
+@keyframes flick{40%{rotate:-18deg}}
+.rspin{position:absolute;left:50%;top:50%;width:25%;aspect-ratio:1;translate:-50% -50%;border-radius:50%;border:3px solid #fff3b8;background:radial-gradient(circle at 35% 30%,#ffe9a0,#d4a528 60%,#8a5f10);color:#2a1a05;font-family:'Cinzel',serif;font-weight:900;font-size:clamp(.78rem,3vw,1.15rem);letter-spacing:.05em;box-shadow:0 8px 22px rgba(0,0,0,.65),inset 0 2px 6px rgba(255,255,255,.6);z-index:3;transition:transform .2s var(--ease),filter .3s;min-height:0}
+.rspin:hover{transform:scale(1.07)}
+.rspin:active{transform:scale(.93)}
+.rspin[disabled]{filter:grayscale(.4) brightness(.85);cursor:default;transform:none}
+.rbox.win{animation:winglow 1.8s ease-out}
+@keyframes winglow{0%,100%{box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 90px rgba(212,165,40,.22)}30%{box-shadow:0 30px 80px rgba(0,0,0,.65),0 0 170px 34px rgba(246,217,127,.85)}}
+.rside{display:grid;gap:16px}
+.rres{min-height:260px;border-radius:26px;display:grid;place-items:center;text-align:center;padding:26px;border:1px dashed rgba(212,165,40,.45);color:var(--muted);font-size:.98rem;line-height:1.7}
+.rres .gold-t{font-family:'Cinzel',serif;font-size:1.4rem;color:var(--gold2)}
+.rres.ready{border:0;padding:0;display:block;text-align:left;min-height:0}
+.rcard{display:grid;grid-template-columns:160px 1fr;gap:20px;align-items:center;border-radius:26px;padding:22px;color:var(--ink);animation:rpop .85s cubic-bezier(.2,.9,.3,1.25)}
+@keyframes rpop{from{opacity:0;transform:scale(.8) translateY(30px)}}
+.rcard img{width:100%;max-height:240px;object-fit:contain;filter:drop-shadow(0 18px 18px var(--shd))}
+.rcard small{letter-spacing:.2em;text-transform:uppercase;font-size:.68rem;font-weight:600;color:var(--ink2)}
+.rcard h3{font-size:1.55rem;color:var(--ink);line-height:1.15;margin:2px 0 6px}
+.rcard p{color:var(--ink2);font-size:.9rem;margin-bottom:12px}
+.rcard .qrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.rcard .qrow+.qrow{margin-top:10px}
+.rcard .price{font-size:1.5rem;font-family:'Cinzel',serif;color:var(--acc)}
+.rcard .qrow .btn.ghost{border-color:var(--ink);color:var(--ink);padding:10px 16px;font-size:.82rem}
+.rstats{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:.85rem}
+.rstats b{color:var(--gold2)}
+.rsnd{border:1px solid var(--line);background:none;border-radius:999px;color:var(--silver);padding:7px 14px;font-size:.78rem;min-height:36px;transition:background .25s,border-color .25s}
+.rsnd:hover,.rsnd[aria-pressed=true]{border-color:var(--gold);background:rgba(212,165,40,.12)}
+@media(max-width:820px){.rwrap{grid-template-columns:1fr;gap:28px}.rcard{grid-template-columns:116px 1fr;padding:16px;gap:14px}.rcard h3{font-size:1.2rem}.rcard p{display:none}.rptr{width:40px;height:56px;top:-12px}}
 </style>
 </head>
 <body>
@@ -682,6 +761,7 @@ footer nav a:hover{color:var(--gold2)}
       <a href="#inicio" class="brand" aria-label="WannaClud Cócteles, inicio"><img src="img/logo-s.webp" alt="WannaClud Cócteles"></a>
       <ul id="menu">
         <li><a href="#inicio" data-sec="inicio">Inicio</a></li>
+        <li><a href="#ruleta" data-sec="ruleta">Ruleta</a></li>
         <li><a href="#latas" data-sec="latas">Latas</a></li>
         <li><a href="#tu-sabor" data-sec="tu-sabor">Tu sabor</a></li>
         <li><a href="#como" data-sec="como">Cómo pedir</a></li>
@@ -715,15 +795,16 @@ footer nav a:hover{color:var(--gold2)}
       <p class="rv" style="--d:.7s">Elige tu sabor, arma tu pedido y envíalo por WhatsApp. Cócteles listos para disfrutar, bien fríos.</p>
       <div class="hbtns rv" style="--d:.85s">
         <a class="btn theme" href="#latas">Ver todas las latas</a>
-        <a class="btn ghost" href="#tu-sabor">Encuentra tu sabor</a>
+        <a class="btn ghost" href="#ruleta">Girar la ruleta</a>
       </div>
     </div>
 
     <div class="stage rv" style="--d:.3s" id="stage">
       <div class="halo"></div>
       <button class="arrow l" id="prev" aria-label="Sabor anterior">‹</button>
-      <div class="tilt" id="tilt"><img id="pimg" src="img/coco.webp" alt="Buchanan's Coco" width="709" height="1086" fetchpriority="high"></div>
+      <div class="tilt" id="tilt"><img id="pimg" src="img/coco.webp" alt="Buchanan's Coco" width="709" height="1086" fetchpriority="high"><img id="pimgN" class="ghost" alt="" aria-hidden="true" draggable="false"></div>
       <button class="arrow r" id="next" aria-label="Sabor siguiente">›</button>
+      <div class="hint" id="hint" aria-hidden="true"><i>‹</i> Desliza <i>›</i></div>
     </div>
 
     <div class="hright rv" style="--d:.55s">
@@ -752,6 +833,25 @@ footer nav a:hover{color:var(--gold2)}
     <div class="fact reveal"><b class="count" data-n="25000" data-money="1">$0</b><span>Cada lata, en pesos</span></div>
     <div class="fact reveal"><b>1 clic</b><span>Pedido por WhatsApp</span></div>
     <div class="fact reveal"><b>+18</b><span>Consumo responsable</span></div>
+  </div>
+</section>
+
+<!-- ================= RULETA ================= -->
+<section id="ruleta" class="sec">
+  <div class="fdecor" data-f="f-limahalf,f-passion,f-orange,f-straw" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="title reveal"><small>Juega y descubre</small><h2 data-split>Ruleta de sabores</h2><p>Pulsa GIRAR o lánzala con el dedo y deja que la suerte elija tu cóctel</p></div>
+    <div class="rwrap">
+      <div class="rbox reveal" id="rbox">
+        <div class="rptr" id="rptr" aria-hidden="true"></div>
+        <canvas id="rcv" role="img" aria-label="Ruleta con los 13 sabores de WannaClud"></canvas>
+        <button class="rspin" id="rspin" type="button">GIRAR</button>
+      </div>
+      <div class="rside reveal">
+        <div class="rres" id="rres" aria-live="polite"><div><b class="gold-t">¿Cuál te toca hoy?</b><br>Gira la ruleta y descúbrelo.</div></div>
+        <div class="rstats"><span>Giros: <b id="rcount">0</b></span><button class="rsnd" id="rsnd" type="button" aria-pressed="false">Sonido apagado</button></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -857,7 +957,7 @@ footer nav a:hover{color:var(--gold2)}
 
 <footer>
   <img src="img/logo.webp" alt="WannaClud Cócteles">
-  <nav aria-label="Pie de página"><a href="#latas">Latas</a><a href="#tu-sabor">Tu sabor</a><a href="#como">Cómo pedir</a><a href="#fiestas">Fiestas</a><a href="#faq">Preguntas</a><a href="#contacto">Contacto</a></nav>
+  <nav aria-label="Pie de página"><a href="#ruleta">Ruleta</a><a href="#latas">Latas</a><a href="#tu-sabor">Tu sabor</a><a href="#como">Cómo pedir</a><a href="#fiestas">Fiestas</a><a href="#faq">Preguntas</a><a href="#contacto">Contacto</a></nav>
   <small>© <span id="y"></span> WannaClud Cócteles · WhatsApp +57 310 203 5327</small>
   <small>Bebe con responsabilidad. Prohibida la venta a menores de edad.</small>
 </footer>
@@ -882,7 +982,7 @@ footer nav a:hover{color:var(--gold2)}
       <p id="mdesc"></p>
       <div class="chips" id="mchips"></div>
       <div class="prow"><span class="price" id="mprice"></span><div class="act" id="mact"></div></div>
-      <div class="mrow"><button class="btn ghost" id="mfav" type="button">♡ Guardar favorito</button><button class="btn ghost" id="mshow" type="button">Verlo arriba</button></div>
+      <div class="mrow"><button class="btn ghost" id="mfav" type="button">♡ Guardar favorito</button><button class="btn ghost" id="mshow" type="button">Verlo arriba</button><button class="btn ghost" id="mshare" type="button">Compartir</button></div>
     </div>
   </div>
 </div>
@@ -958,6 +1058,7 @@ const store={
   set(k,v){try{localStorage.setItem('wc-'+k,JSON.stringify(v));}catch(e){}}
 };
 let PC=CANS[0].pc, cur=0, heroVis=true, manual=false;
+const vib=p=>{try{if(navigator.vibrate)navigator.vibrate(p);}catch(e){}};
 
 /* ----- decoración lateral: hojas, pétalos, menta, hielo ----- */
 function frond(m){
@@ -1143,7 +1244,7 @@ addEventListener('scroll',()=>{if(!tick){tick=true;requestAnimationFrame(onScrol
 $('#burger').onclick=()=>{const o=$('#menu').classList.toggle('open');$('#burger').setAttribute('aria-expanded',o);};
 $$('#menu a').forEach(a=>a.addEventListener('click',()=>{$('#menu').classList.remove('open');$('#burger').setAttribute('aria-expanded','false');}));
 const spy=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)$$('#menu a').forEach(a=>a.classList.toggle('active',a.dataset.sec===e.target.id));}),{rootMargin:'-45% 0px -50% 0px'});
-['inicio','latas','tu-sabor','como','fiestas','faq','contacto'].forEach(id=>{const el=$('#'+id);if(el)spy.observe(el);});
+['inicio','ruleta','latas','tu-sabor','como','fiestas','faq','contacto'].forEach(id=>{const el=$('#'+id);if(el)spy.observe(el);});
 
 /* títulos: palabra por palabra, letra por letra */
 $('#h1').innerHTML=$('#h1').textContent.split(' ').map((w,i)=>`<span class="w"><i style="--i:${i}">${w}</i></span>`).join(' ');
@@ -1226,7 +1327,7 @@ function fruitBurst(from,id){
 function add(id,d=1,from=null){
   cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];
   store.set('cart',cart);draw();
-  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);}
+  if(d>0){toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);vib(12);}
 }
 function renderActs(){
   $$('.act').forEach(el=>{
@@ -1379,6 +1480,11 @@ function closeModal(){
 function mstep(d){mi=(mi+d+mlist.length)%mlist.length;fillModal(mlist[mi],d>0?60:-60);}
 $('#modal').addEventListener('click',e=>{if(e.target.closest('[data-close]'))closeModal();});
 $('#mprev').onclick=()=>mstep(-1);$('#mnext').onclick=()=>mstep(1);
+$('#mshare').onclick=async()=>{
+  const c=mlist[mi],data={title:`${c.name} · WannaClud Cócteles`,text:`${c.name} a ${money(c.price)} COP en WannaClud Cócteles`,url:location.href.split('#')[0]};
+  try{if(navigator.share){await navigator.share(data);return;}}catch(e){if(e&&e.name==='AbortError')return;}
+  try{await navigator.clipboard.writeText(data.url);toast('Enlace copiado');}catch(e){toast('Copia el enlace desde la barra del navegador');}
+};
 $('#mfav').onclick=()=>toggleFav(mlist[mi].id);
 $('#mact').addEventListener('click',e=>{const b=e.target.closest('[data-act]');if(b)add(b.dataset.id,b.dataset.act==='inc'?1:-1,b);});
 $('#mshow').onclick=()=>{const id=mlist[mi].id;closeModal();manual=true;clearTimeout(tm);$$('.dk').forEach(x=>x.classList.remove('auto'));setFlavor(CANS.findIndex(c=>c.id===id),null);hero.scrollIntoView({behavior:reduce?'auto':'smooth'});};
@@ -1479,14 +1585,14 @@ function fill(i){
   const x=$('#idx');x.textContent=String(i+1).padStart(2,'0');x.style.animation='none';void x.offsetWidth;x.style.animation='';
 }
 function centerDock(i){const d=$('#dock'),b=$$('.dk')[i];if(!b)return;d.scrollTo({left:b.offsetLeft-d.clientWidth/2+b.offsetWidth/2,behavior:reduce?'auto':'smooth'});}
-function applyFlavor(i){
+function applyFlavor(i,noImg){
   cur=i;const c=CANS[i];
   $$('.dk').forEach((b,j)=>{b.classList.toggle('on',j===i);b.classList.remove('auto');});
   if(!manual)requestAnimationFrame(()=>$$('.dk')[i].classList.add('auto'));
   centerDock(i);
   setTheme(c.t);PC=c.pc;
-  const im=$('#pimg');im.className='';im.src=c.img;im.alt=c.name;void im.offsetWidth;im.className='swap-in';
-  im.onanimationend=()=>{im.className='idle';};
+  if(!noImg){const im=$('#pimg');im.className='';im.src=c.img;im.alt=c.name;void im.offsetWidth;im.className='swap-in';
+  im.onanimationend=()=>{im.className='idle';};}
   buildLeaves(c.leaves);buildSprites(c.sprite);
   const pi=$('#pinfo');pi.classList.remove('fade');void pi.offsetWidth;fill(i);pi.classList.add('fade');
   const b=document.createElement('div');b.className='burst';hero.appendChild(b);setTimeout(()=>b.remove(),1100);
@@ -1518,9 +1624,64 @@ $$('.dk').forEach(b=>b.onclick=()=>userPick(+b.dataset.f,b));
 $('#prev').onclick=e=>userPick(cur-1,e.currentTarget);
 $('#next').onclick=e=>userPick(cur+1,e.currentTarget);
 $('#surprise').onclick=e=>{let j;do{j=Math.floor(Math.random()*N);}while(j===cur);userPick(j,e.currentTarget);};
-let sx=null;
-$('#stage').addEventListener('pointerdown',e=>{sx=e.clientX;});
-addEventListener('pointerup',e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;if(Math.abs(dx)>70&&!mOpen)userPick(cur+(dx<0?1:-1),$('#stage'));});
+/* deslizar con el dedo: la lata sigue al dedo y la siguiente entra desde el lado */
+(function(){
+  const st=$('#stage'),main=$('#pimg'),gh=$('#pimgN');
+  let d=null,drag=false;
+  const W=()=>st.clientWidth*.9;
+  const neighbor=dx=>(cur+(dx<0?1:-1)+N)%N;
+  function showGhost(dx){const j=neighbor(dx);if(gh.dataset.j!==String(j)){gh.dataset.j=j;gh.src=CANS[j].img;}gh.style.visibility='visible';}
+  function move(dx){
+    const w=W(),p=Math.min(1,Math.abs(dx)/w);showGhost(dx);
+    main.style.translate=`${dx}px 0`;main.style.rotate=`${dx*.035}deg`;main.style.scale=1-p*.14;main.style.opacity=1-p*.6;
+    gh.style.translate=`calc(-50% + ${dx+(dx<0?1:-1)*w}px) -50%`;gh.style.scale=.84+.16*p;gh.style.opacity=.3+.7*p;gh.style.rotate=`${-dx*.02}deg`;
+  }
+  const T='.34s cubic-bezier(.2,.8,.2,1)';
+  function reset(){
+    main.style.transition='none';gh.style.transition='none';
+    main.style.translate='';main.style.rotate='';main.style.scale='';main.style.opacity='';
+    gh.style.visibility='hidden';gh.style.opacity='0';gh.style.translate='-50% -50%';gh.style.scale='';gh.style.rotate='';
+    void main.offsetWidth;
+    main.style.transition='';gh.style.transition='';
+  }
+  st.addEventListener('pointerdown',e=>{
+    if((e.pointerType==='mouse'&&e.button!==0)||busy||mOpen||e.target.closest('.arrow'))return;
+    d={x:e.clientX,y:e.clientY,id:e.pointerId,lx:e.clientX,lt:performance.now(),v:0};
+  });
+  st.addEventListener('pointermove',e=>{
+    if(!d||e.pointerId!==d.id)return;
+    const dx=e.clientX-d.x,dy=e.clientY-d.y;
+    if(!drag){
+      if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)*1.15){drag=true;try{st.setPointerCapture(e.pointerId);}catch(_){}st.classList.add('dragging');main.style.transition='none';gh.style.transition='none';$('#hint').classList.remove('show');store.set('hint',true);}
+      else return;
+    }
+    const now=performance.now();d.v=(e.clientX-d.lx)/Math.max(1,now-d.lt);d.lx=e.clientX;d.lt=now;
+    move(dx);
+  });
+  function end(e){
+    if(!d||e.pointerId!==d.id)return;
+    const was=drag,dx=e.clientX-d.x,v=d.v;d=null;drag=false;
+    if(!was)return;
+    st.classList.remove('dragging');
+    const w=W(),go=Math.abs(dx)>w*.2||(Math.abs(v)>.45&&Math.abs(dx)>24);
+    main.style.transition=`translate ${T},rotate ${T},scale ${T},opacity ${T}`;gh.style.transition=`translate ${T},scale ${T},opacity ${T},rotate ${T}`;
+    if(!go){main.style.translate='0 0';main.style.rotate='0deg';main.style.scale='1';main.style.opacity='1';
+      gh.style.opacity='0';gh.style.scale='.84';setTimeout(reset,360);return;}
+    const dir=dx<0?1:-1,j=neighbor(dx);
+    manual=true;clearTimeout(tm);$$('.dk').forEach(x=>x.classList.remove('auto'));busy=true;vib(10);
+    applyFlavor(j,true);
+    main.style.translate=`${-dir*w*1.1}px 0`;main.style.rotate=`${-dir*14}deg`;main.style.scale='.8';main.style.opacity='0';
+    gh.style.translate='-50% -50%';gh.style.scale='1';gh.style.opacity='1';gh.style.rotate='0deg';
+    setTimeout(()=>{
+      main.className='idle';main.src=CANS[j].img;main.alt=CANS[j].name;
+      reset();
+      busy=false;if(pending!==null){const p=pending;pending=null;if(p!==cur)setFlavor(p,null);}
+    },360);
+  }
+  st.addEventListener('pointerup',end);st.addEventListener('pointercancel',end);
+  /* pista de "desliza" solo la primera vez en pantallas táctiles */
+  if(!fine&&!store.get('hint',false))setTimeout(()=>{if(!store.get('hint',false))$('#hint').classList.add('show');},2400);
+})();
 $('#padd').onclick=()=>add(CANS[cur].id,1,$('#pimg'));
 /* efecto "dock" de macOS: los sabores cercanos al cursor crecen */
 if(fine&&!reduce){
@@ -1533,6 +1694,170 @@ new IntersectionObserver(es=>{heroVis=es[0].isIntersecting;document.body.classLi
 function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>{
   if(!heroVis||document.hidden||$('#age')||mOpen||$('#drawer').classList.contains('open')){schedule();return;}
   setFlavor(cur+1,$$('.dk')[(cur+1)%N]);},AUTO);}
+
+
+
+/* =====================================================================
+   ruleta de sabores (física real: se puede lanzar con el dedo o con el botón)
+   ===================================================================== */
+(function(){
+  const cv=$('#rcv'),box=$('#rbox'),ptr=$('#rptr'),btn=$('#rspin'),res=$('#rres');
+  if(!cv||!box)return;
+  const ctx=cv.getContext('2d'),TAU=Math.PI*2,step=TAU/N;
+  const thumbs=CANS.map(c=>{const i=new Image();i.src=c.thumb;return i;});
+  const hi=CANS.map(()=>null);
+  const logo=new Image();logo.src='img/logo-s.webp';
+  let dpr=1,S=0,ang=0,vel=0,state='idle',lastK=null,visible=false,running=false,lastT=0,drag=null,count=0,winUntil=0,settle=null,loadedHi=false;
+  let snd=store.get('snd',false),actx=null;
+
+  /* ---- sonido (apagado por defecto) ---- */
+  function ac(){if(!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}return actx;}
+  function beep(f,dur,vol,type){
+    if(!snd)return;const a=ac();if(!a)return;
+    try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;o.type=type||'square';o.frequency.value=f;g.gain.setValueAtTime(vol||.05,t);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+dur);}catch(e){}
+  }
+  const tickS=()=>beep(1100+Math.random()*250,.035,.05);
+  const winS=()=>[660,880,1100,1320].forEach((f,i)=>setTimeout(()=>beep(f,.2,.09,'triangle'),i*120));
+  function paintSnd(){const b=$('#rsnd');b.textContent=snd?'Sonido activado':'Sonido apagado';b.setAttribute('aria-pressed',snd);}
+  $('#rsnd').onclick=()=>{snd=!snd;store.set('snd',snd);paintSnd();if(snd){ac();tickS();}};
+  paintSnd();
+
+  /* ---- tamaño y dibujo ---- */
+  function size(){const s=box.clientWidth;if(!s)return;S=s;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(s*dpr);cv.height=Math.round(s*dpr);}
+  function loadHi(){if(loadedHi)return;loadedHi=true;CANS.forEach((c,i)=>{const im=new Image();im.onload=()=>{hi[i]=im;};im.src=c.card;});}
+  const idxAt=a=>((Math.round(-a/step)%N)+N)%N;
+  function draw(t){
+    if(!S)return;
+    const g=ctx;g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,S,S);
+    const cx=S/2,cy=S/2,r0=S/2-1,ring=S*.06,r1=r0-ring,hub=S*.125;
+    /* aro dorado */
+    let lg=g.createLinearGradient(0,0,S,S);lg.addColorStop(0,'#fff3b8');lg.addColorStop(.45,'#b8860b');lg.addColorStop(1,'#f6d97f');
+    g.beginPath();g.arc(cx,cy,r0,0,TAU);g.fillStyle=lg;g.fill();
+    g.beginPath();g.arc(cx,cy,r1+3,0,TAU);g.fillStyle='#1a1205';g.fill();
+    /* foquitos de casino */
+    const chase=state==='spin'||state==='settle'||performance.now()<winUntil,nb=28;
+    for(let i=0;i<nb;i++){
+      const a=i/nb*TAU,on=chase?((i+Math.floor(t/65))%3===0):((i+Math.floor(t/450))%2===0);
+      const x=cx+Math.cos(a)*(r0-ring/2),y=cy+Math.sin(a)*(r0-ring/2);
+      g.beginPath();g.arc(x,y,ring*.27,0,TAU);g.fillStyle=on?'#fffbe0':'#7a5a14';
+      if(on){g.shadowColor='#ffe27a';g.shadowBlur=ring*.9;}else{g.shadowBlur=0;}
+      g.fill();
+    }
+    g.shadowBlur=0;
+    /* sectores con su lata */
+    for(let i=0;i<N;i++){
+      const th=ang+i*step,a0=th-Math.PI/2-step/2,a1=a0+step,tt=CANS[i].t;
+      g.beginPath();g.moveTo(cx,cy);g.arc(cx,cy,r1,a0,a1);g.closePath();
+      const rg=g.createRadialGradient(cx,cy,hub,cx,cy,r1);rg.addColorStop(0,tt.hb1);rg.addColorStop(.55,tt.hb2);rg.addColorStop(1,tt.hb3);
+      g.fillStyle=rg;g.fill();g.lineWidth=2;g.strokeStyle='rgba(255,243,184,.95)';g.stroke();
+      const im=hi[i]||thumbs[i];
+      if(im&&im.naturalWidth){
+        const h=r1*.54,w=h*im.naturalWidth/im.naturalHeight;
+        g.save();g.translate(cx,cy);g.rotate(th);g.translate(0,-r1*.6);
+        g.shadowColor='rgba(0,0,0,.4)';g.shadowBlur=S*.015;g.shadowOffsetY=S*.008;
+        g.drawImage(im,-w/2,-h/2,w,h);g.restore();
+      }
+    }
+    /* sombra interior y centro */
+    const sh=g.createRadialGradient(cx,cy,r1*.82,cx,cy,r1+2);sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(0,0,0,.35)');
+    g.beginPath();g.arc(cx,cy,r1,0,TAU);g.fillStyle=sh;g.fill();
+    g.beginPath();g.arc(cx,cy,hub*1.22,0,TAU);g.fillStyle='#1a1205';g.fill();
+    g.beginPath();g.arc(cx,cy,hub*1.22,0,TAU);g.lineWidth=3;g.strokeStyle='#d4a528';g.stroke();
+  }
+
+  /* ---- bucle de animación y física ---- */
+  function clack(){
+    ptr.classList.remove('flick');void ptr.offsetWidth;ptr.classList.add('flick');
+    tickS();if(Math.abs(vel)<9)vib(5);
+  }
+  function loop(ts){
+    if(!visible){running=false;return;}
+    const dt=Math.min(.05,(ts-lastT)/1000||.016);lastT=ts;
+    if(state==='spin'){
+      const sg=Math.sign(vel)||1;ang+=vel*dt;vel-=sg*(.9+.32*Math.abs(vel))*dt;
+      if(Math.sign(vel)!==sg||Math.abs(vel)<.32){beginSettle(ts);}
+    }else if(state==='settle'){
+      const p=Math.min(1,(ts-settle.t0)/settle.dur),e=1-Math.pow(1-p,3);ang=settle.from+(settle.to-settle.from)*e;
+      if(p>=1){ang=settle.to;state='idle';finish();}
+    }
+    if(state==='spin'||state==='settle'||state==='drag'){
+      const k=Math.floor((-ang+step/2)/step);if(lastK!==null&&k!==lastK)clack();lastK=k;
+    }
+    draw(ts);
+    requestAnimationFrame(loop);
+  }
+  function kick(){if(!running&&visible){running=true;lastT=performance.now();requestAnimationFrame(loop);}}
+  function beginSettle(ts){state='settle';const to=Math.round(ang/step)*step;settle={from:ang,to,t0:ts,dur:Math.max(260,Math.min(520,Math.abs(to-ang)/step*700))};vel=0;}
+
+  /* ---- giro ---- */
+  function spin(v0){
+    if(state==='spin'||state==='settle')return;
+    $('#rres').classList.remove('ready');
+    if(reduce){const i=Math.floor(Math.random()*N);ang=-i*step;finish();draw(performance.now());return;}
+    vel=v0||(16+Math.random()*9);state='spin';btn.disabled=true;vib([12,40,12]);
+    if(snd)ac();loadHi();kick();
+  }
+  function finish(){
+    btn.disabled=false;vel=0;lastK=null;
+    const c=CANS[idxAt(ang)];count++;$('#rcount').textContent=count;
+    showResult(c);
+    if(SMALL)setTimeout(()=>{const q=res.getBoundingClientRect();if(q.bottom>innerHeight-90||q.top<70)res.scrollIntoView({behavior:reduce?"auto":"smooth",block:"center"});},1000);
+    box.classList.remove('win');void box.offsetWidth;box.classList.add('win');winUntil=performance.now()+1800;
+    winS();vib([30,60,30,60,90]);
+    if(!reduce)bigBurst(c);
+    kick();
+  }
+  function bigBurst(c){
+    const hub=btn;fruitBurst(hub,c.id);setTimeout(()=>fruitBurst(hub,c.id),140);
+  }
+  function showResult(c){
+    const t=c.t;
+    res.className='rres ready';
+    res.innerHTML=`<div class="rcard" style="background:linear-gradient(160deg,${t.hb1},${t.hb2});--ink:${t.ink};--ink2:${t.ink2};--acc:${t.acc};--shd:${t.shd}">
+      <img src="${c.img}" alt="${c.name}">
+      <div><small>¡Te tocó!</small><h3>${c.name}</h3><p>${c.desc}</p>
+        <div class="qrow"><span class="price">${money(c.price)}<small>COP</small></span><div class="act" data-id="${c.id}"></div></div>
+        <div class="qrow"><button class="btn ghost" type="button" data-view="${c.id}">Ver detalle</button><button class="btn ghost" type="button" data-again="1">↻ Girar otra vez</button></div>
+      </div></div>`;
+    renderActs();
+  }
+  res.addEventListener('click',e=>{
+    const b=e.target.closest('[data-act]');if(b){add(b.dataset.id,b.dataset.act==='inc'?1:-1,b);return;}
+    const v=e.target.closest('[data-view]');if(v){openModal(v.dataset.view);return;}
+    if(e.target.closest('[data-again]'))spin();
+  });
+  btn.addEventListener('click',()=>spin());
+
+  /* ---- lanzar la ruleta con el dedo o el mouse ---- */
+  const pa=e=>{const r=cv.getBoundingClientRect();return Math.atan2(e.clientY-(r.top+r.height/2),e.clientX-(r.left+r.width/2));};
+  const norm=d=>{while(d>Math.PI)d-=TAU;while(d<-Math.PI)d+=TAU;return d;};
+  cv.addEventListener('pointerdown',e=>{
+    if(state==='spin'||state==='settle'||(e.pointerType==='mouse'&&e.button!==0))return;
+    drag={id:e.pointerId,a:pa(e),ang0:ang,acc:0,moved:false,samples:[[performance.now(),0]]};
+  });
+  cv.addEventListener('pointermove',e=>{
+    if(!drag||e.pointerId!==drag.id)return;
+    const a=pa(e);drag.acc+=norm(a-drag.a);drag.a=a;
+    if(!drag.moved&&Math.abs(drag.acc)>.06){drag.moved=true;state='drag';box.classList.add('grabbing');try{cv.setPointerCapture(e.pointerId);}catch(_){}loadHi();kick();}
+    if(drag.moved){ang=drag.ang0+drag.acc;const n=performance.now();drag.samples.push([n,drag.acc]);if(drag.samples.length>6)drag.samples.shift();}
+  });
+  function dragEnd(e){
+    if(!drag||e.pointerId!==drag.id)return;
+    const d=drag;drag=null;box.classList.remove('grabbing');
+    if(!d.moved)return;
+    const s=d.samples,a=s[0],b=s[s.length-1],v=(b[1]-a[1])/Math.max(.016,(b[0]-a[0])/1000);
+    if(Math.abs(v)>2){state='idle';vel=Math.max(-26,Math.min(26,v*1.1));if(Math.abs(vel)<8)vel=Math.sign(vel)*8;state='spin';btn.disabled=true;lastT=performance.now();vib(12);kick();}
+    else{beginSettle(performance.now());kick();}
+  }
+  cv.addEventListener("pointerup",dragEnd);cv.addEventListener("pointercancel",dragEnd);
+
+  /* ---- visibilidad, tamaño ---- */
+  new IntersectionObserver(es=>{visible=es[0].isIntersecting;if(visible){size();loadHi();kick();}},{rootMargin:'300px'}).observe(box);
+  if(window.ResizeObserver)new ResizeObserver(()=>{size();draw(performance.now());}).observe(box);else addEventListener('resize',()=>{size();draw(performance.now());});
+  logo.onload=()=>draw(performance.now());
+  size();draw(performance.now());
+  thumbs.forEach(i=>{i.onload=()=>draw(performance.now());});
+})();
 
 /* =====================================================================
    arranque
