@@ -1615,7 +1615,7 @@ body.show #showui button{cursor:pointer!important}
       <details><summary>¿Cuánto alcohol tienen?</summary><p>Las latas de Coco, Piña y Tequila Rose indican 12% alc. vol. y 400 mL en su etiqueta. Para los demás sabores, pregúntanos por WhatsApp y te damos el dato.</p></details>
       <details><summary>¿Hacen entregas?</summary><p>Coordinamos la entrega por WhatsApp según tu zona. Escríbenos y te contamos las opciones.</p></details>
       <details><summary>¿Cómo se paga?</summary><p>Te confirmamos las formas de pago cuando recibimos tu pedido por WhatsApp.</p></details>
-      <details><summary>¿Guardan mis datos?</summary><p>No guardamos datos personales. Tu pedido, tus favoritos y tus logros se quedan solo en tu teléfono. Contamos las visitas y los toques de forma anónima, sin cookies, para mejorar la página.</p></details>
+      <details><summary>¿Guardan mis datos?</summary><p>No guardamos datos personales. Tu pedido, tus favoritos y tus logros se quedan solo en tu teléfono. Contamos las visitas y los toques de forma anónima, sin cookies, para mejorar la página. También anotamos la ciudad aproximada desde donde se visita, que se deduce de la conexión, sin pedir tu ubicación; no guardamos tu dirección de internet.</p></details>
       <details><summary>¿Venden a menores de edad?</summary><p>No. Nuestros productos son solo para mayores de 18 años. Bebe con responsabilidad.</p></details>
     </div>
   </div>
@@ -1645,7 +1645,7 @@ body.show #showui button{cursor:pointer!important}
   <div class="fbtns"><button class="btn ghost" id="shareSite" type="button">Compartir esta página</button><button class="btn ghost" id="install" type="button" hidden>Instalar la app</button></div>
   <small>© <span id="y"></span> WannaClud Cócteles · WhatsApp +57 310 203 5327</small>
   <small>Bebe con responsabilidad. Prohibida la venta a menores de edad.</small>
-  <small class="privnote">Contamos las visitas de forma anónima, sin cookies ni datos personales.</small>
+  <small class="privnote">Contamos las visitas y la ciudad aproximada de forma anónima, sin cookies ni datos personales.</small>
 </footer>
 
 <a class="wa" id="wa" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 32 32"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.3.6 4.4 1.7 6.3L3 29l7.2-1.9c1.8 1 3.8 1.5 5.8 1.5 7 0 12.700-5.700 12.700-12.700S23 3 16 3zm0 23c-1.800 0-3.600-.5-5.100-1.400l-.4-.2-4.300 1.100 1.200-4.200-.3-.4c-1-1.600-1.500-3.400-1.500-5.300C5.600 10 10.300 5.300 16 5.300S26.400 10 26.400 15.700 21.700 26 16 26zm5.700-7.800c-.3-.2-1.800-.9-2.100-1s-.5-.2-.7.200-.8 1-1 1.200-.4.200-.7.100c-1.900-.9-3.100-1.700-4.300-3.800-.3-.6.300-.5.900-1.700.1-.2 0-.4 0-.5l-1-2.300c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.100-.8.400-.3.300-1 1-1 2.500s1.100 2.900 1.200 3.100c.2.200 2.200 3.400 5.300 4.700 2 .8 2.700.9 3.700.8.600-.1 1.800-.7 2.100-1.500.3-.7.300-1.300.2-1.500-.1-.2-.3-.3-.6-.4z"/></svg></a>
@@ -3890,6 +3890,35 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     hit('franja-'+String(Math.floor(bog().getUTCHours()/3)*3).padStart(2,'0'));
     hit(SMALL?'equipo-movil':'equipo-pc');
     hit('origen-'+source());
+    geo();
+  }
+  /* ---------- ciudad aproximada de la visita: se deduce de la conexión, sin pedir ubicación ni permisos ---------- */
+  const norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+  const slug=s=>norm(s).replace(/ /g,'-');
+  const CIUDADES=['Bogotá','Medellín','Cali','Barranquilla','Cartagena','Cúcuta','Bucaramanga','Pereira','Santa Marta','Ibagué','Manizales','Villavicencio','Pasto','Montería','Neiva','Armenia','Soledad','Valledupar','Popayán','Sincelejo','Tunja','Riohacha','Florencia','Yopal','Quibdó','Buenaventura','Palmira','Floridablanca','Bello','Itagüí','Envigado','Sabaneta','Rionegro','Soacha','Chía','Zipaquirá','Facatativá','Girardot','Tuluá','Buga','Cartago','Dosquebradas','Barrancabermeja','Maicao','Apartadó','Turbo','Duitama','Sogamoso','Ocaña','Pamplona','San Andrés','Leticia','Mocoa','Arauca','Girón','Piedecuesta','Malambo','Magangué','Lorica','Ciénaga','Fusagasugá','Mosquera','Jamundí','Yumbo','Villa del Rosario','Pitalito','Garzón'];
+  const DEPTOS=['Amazonas','Antioquia','Arauca','Atlántico','Bogotá D.C.','Bolívar','Boyacá','Caldas','Caquetá','Casanare','Cauca','Cesar','Chocó','Córdoba','Cundinamarca','Guainía','Guaviare','Huila','La Guajira','Magdalena','Meta','Nariño','Norte de Santander','Putumayo','Quindío','Risaralda','San Andrés y Providencia','Santander','Sucre','Tolima','Valle del Cauca','Vaupés','Vichada'];
+  const PAISES=[['co','Colombia'],['us','Estados Unidos'],['es','España'],['mx','México'],['ec','Ecuador'],['ve','Venezuela'],['pe','Perú'],['pa','Panamá'],['cl','Chile'],['ar','Argentina'],['br','Brasil'],['ca','Canadá']];
+  const CALIAS={'bogota d c':'bogota','bogota dc':'bogota','santa fe de bogota':'bogota','santiago de cali':'cali','cartagena de indias':'cartagena','san jose de cucuta':'cucuta','villa del rosario':'villa del rosario','san andres':'san andres','san andres isla':'san andres'};
+  async function jfetch(u,ms){const c=new AbortController(),tm=setTimeout(()=>c.abort(),ms);try{const r=await fetch(u,{signal:c.signal,cache:'no-store'});if(!r.ok)return null;return await r.json();}catch(_){return null;}finally{clearTimeout(tm);}}
+  async function geo(){
+    let g=null;try{g=JSON.parse(sessionStorage.getItem('wc-geo')||'null');}catch(_){}
+    if(!g){
+      let j=await jfetch('https://get.geojs.io/v1/ip/geo.json',4500);
+      if(j&&(j.country_code||j.city))g={city:j.city,region:j.region,cc:j.country_code};
+      else{j=await jfetch('https://ipwho.is/',4500);if(j&&j.success!==false&&(j.country_code||j.city))g={city:j.city,region:j.region,cc:j.country_code};}
+      if(!g)return;
+      try{sessionStorage.setItem('wc-geo',JSON.stringify(g));}catch(_){}
+    }
+    const cc=String(g.cc||'').toLowerCase();
+    hit('pais-'+(PAISES.some(p=>p[0]===cc)?cc:'otro'));
+    if(cc==='co'){
+      let cs=norm(g.city);cs=CALIAS[cs]||cs;
+      const ci=CIUDADES.find(c=>norm(c)===cs);
+      hit('ciudad-'+(ci?slug(ci):'otras'));
+      const rs=norm(g.region).replace(/^departamento de /,'').replace(/ (department|province|region)$/,'');
+      const de=DEPTOS.find(d=>norm(d)===rs)||[...DEPTOS].sort((a,b)=>b.length-a.length).find(d=>rs&&rs.includes(norm(d)));
+      if(de)hit('depto-'+slug(de));
+    }
   }
   setTimeout(session,1800);
 
@@ -3932,6 +3961,15 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     }
     return out;
   }
+  /* lectura en tandas de 3 a la vez (≈3 por segundo, dentro del límite del servicio) para la lista larga de ciudades */
+  async function getBatch(keys,cb,token){
+    for(let i=0;i<keys.length;i+=3){
+      if(token&&token.stop)break;
+      const t0=Date.now(),part=keys.slice(i,i+3),vals=await Promise.all(part.map(get));
+      part.forEach((k,j)=>cb(k,vals[j]));
+      const w=1300-(Date.now()-t0);if(w>0)await sleep(w);
+    }
+  }
   function count(el,to){
     if(to==null){el.textContent='–';return;}
     if(reduce){el.textContent=fmtN(to);return;}
@@ -3966,6 +4004,8 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
       </div>
       <div class="pn-msg" id="pnMsg"></div>
       <div class="pn-det" id="pnDet" hidden></div>
+      <div class="pn-det" id="pnGeo" hidden></div>
+      <button class="btn ghost pn-more" id="pnGeoBtn" type="button">📍 Ver de qué ciudades llegan</button>
       <button class="btn ghost pn-more" id="pnMore" type="button">Ver más detalle</button>
       <div class="pn-foot"><label><input type="checkbox" id="pnOwner"> No contar mis visitas en este dispositivo</label><button class="btn ghost" id="pnRef" type="button" style="padding:8px 18px;min-height:0">Actualizar</button></div>
       <p class="pn-note">El conteo usa el servicio gratuito abacus.jasoncameron.dev. Los números son solo informativos: cualquiera que conozca la dirección del contador podría consultarlos.</p></div>`;
@@ -3974,6 +4014,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
       if(e.target.closest('[data-pn]'))close();
       else if(e.target.closest('#pnRef'))refresh(true);
       else if(e.target.closest('#pnMore'))loadDetail();
+      else if(e.target.closest('#pnGeoBtn'))loadGeo();
     });
     pnl.querySelector('#pnOwner').addEventListener('change',e=>store.set('owner',e.target.checked));
   }
@@ -4031,13 +4072,29 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
       list('A qué hora entran',FRANJAS.map(f=>[f[1],got['franja-'+f[0]]]));
     msg.textContent='Listo. Cada visita se cuenta una vez por sesión.';
   }
+  async function loadGeo(){
+    const box=$in('#pnGeo'),btn=$in('#pnGeoBtn'),msg=$in('#pnMsg');btn.hidden=true;box.hidden=false;
+    if(tok)tok.stop=true;const my=tok={stop:false};
+    const cityKeys=[...CIUDADES.map(c=>'ciudad-'+slug(c)),'ciudad-otras'],deptKeys=DEPTOS.map(d=>'depto-'+slug(d)),paisKeys=[...PAISES.map(p=>'pais-'+p[0]),'pais-otro'];
+    const keys=[...cityKeys,...deptKeys,...paisKeys],got={};let n=0;
+    const sortd=a=>a.filter(r=>r[1]>0).sort((x,y)=>y[1]-x[1]);
+    const render=()=>{
+      const ci=sortd(CIUDADES.map(c=>[c,got['ciudad-'+slug(c)]])),ot=got['ciudad-otras']>0?[['Otras ciudades o municipios de Colombia',got['ciudad-otras']]]:[];
+      const de=sortd(DEPTOS.map(d=>[d,got['depto-'+slug(d)]])),pa=sortd([...PAISES.map(p=>[p[1],got['pais-'+p[0]]]),['Otros países',got['pais-otro']]]);
+      const tot=pa.reduce((s,r)=>s+r[1],0);
+      box.innerHTML=tot?(list('Ciudades de Colombia',[...ci,...ot])+list('Departamentos',de)+list('Países',pa)+'<p class="pn-note">La ciudad se deduce de la conexión de cada persona (aproximada: a veces muestra la ciudad del proveedor de internet). Empieza a contarse desde que se activó esta función.</p>'):'<div class="pn-msg">Todavía no hay datos de ciudad. Se empiezan a contar con las próximas visitas (no cuentan las tuyas si activaste "No contar mis visitas").</div>';
+    };
+    box.innerHTML='<div class="pn-msg">Cargando ciudades…</div>';
+    await getBatch(keys,(k,v)=>{got[k]=v;n++;msg.textContent='Ciudades '+n+'/'+keys.length+'…';if(n%9===0)render();},my);
+    if(my.stop)return;render();msg.textContent='Listo.';
+  }
   function open(){
     if(!pnl)build();
     if(store.get('owner',null)===null)store.set('owner',true);
     $in('#pnOwner').checked=!!store.get('owner',false);
     pnl.hidden=false;document.body.style.overflow='hidden';
     requestAnimationFrame(()=>requestAnimationFrame(()=>pnl.classList.add('show')));
-    detailLoaded=false;$in('#pnDet').hidden=true;$in('#pnMore').hidden=false;
+    detailLoaded=false;$in('#pnDet').hidden=true;$in('#pnMore').hidden=false;$in('#pnGeo').hidden=true;$in('#pnGeoBtn').hidden=false;
     refresh();
   }
   function close(){
