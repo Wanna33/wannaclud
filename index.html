@@ -2074,12 +2074,87 @@ const MUSIC=(function(){
   /* mientras juegas, la música baja para que se oigan los efectos */
   new MutationObserver(()=>setDuck(document.body.classList.contains('cz-open'))).observe(document.body,{attributes:true,attributeFilter:['class']});
 
-  return {
+  const GEN={
     start,stop,toggle(){playing?stop():start();},setFlavor,setVolume,
     get playing(){return playing;},get volume(){return vol;},get now(){return eng?eng.style.name:null;},
     styleName(id){const m=MAP[id||CANS[cur].id]||MAP.coco;return ST[m[0]].name;},
     onChange(f){hooks.push(f);},
     make,ST,MAP
+  };
+
+  /* ---------- canciones de Luister La Voz: suenan solas en toda la visita ----------
+     Estrategia: arrancan con el primer toque (los navegadores no permiten sonido antes), siguen una tras otra,
+     empiezan por una canción distinta en cada visita, bajan cuando juegas, se pausan al salir de la pestaña
+     y no vuelven a arrancar solas si la persona las pausó. */
+  const TRACKS=[
+    {src:'audio/6-am.mp3',name:'6 AM'},
+    {src:'audio/el-capataz.mp3',name:'El Capataz'},
+    {src:'audio/amarte-mas-no-pude.mp3',name:'Amarte más no pude'}
+  ];
+  const A=new Audio();A.preload='none';A.setAttribute('playsinline','');
+  let ti=(+store.get('songIdx',-1)+1)%TRACKS.length,sPlaying=false,svol=store.get('musicVol',.75),sduck=1,fade=0,failed=0,useGen=false,hidPaused=false,pre=null,preFor=-1,sHooks=[];
+  store.set('songIdx',ti);
+  const target=()=>svol*sduck;
+  function fadeTo(v,ms,done){
+    clearInterval(fade);const v0=A.volume,t0=performance.now();
+    fade=setInterval(()=>{const k=Math.min(1,(performance.now()-t0)/ms);try{A.volume=Math.max(0,Math.min(1,v0+(v-v0)*k));}catch(e){}if(k>=1){clearInterval(fade);if(done)done();}},50);
+  }
+  function load(i){ti=(i+TRACKS.length)%TRACKS.length;store.set('songIdx',ti);A.src=TRACKS[ti].src;}
+  function sNotify(){sHooks.forEach(f=>{try{f(MUSIC.playing);}catch(_){}});}
+  function sStart(){
+    if(useGen)return GEN.start();
+    if(sPlaying)return;
+    if(!A.src)load(ti);
+    try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(_){}
+    A.volume=0;sPlaying=true;store.set('musicOff',0);
+    const p=A.play();if(p&&p.catch)p.catch(()=>{sPlaying=false;sNotify();});
+    fadeTo(target(),1400);award('fiesta');sNotify();
+  }
+  function sStop(user){
+    if(useGen)return GEN.stop();
+    if(!sPlaying)return;sPlaying=false;if(user)store.set('musicOff',1);
+    fadeTo(0,450,()=>{if(!sPlaying)A.pause();});sNotify();
+  }
+  A.addEventListener('ended',()=>{load(ti+1);const p=A.play();if(p&&p.catch)p.catch(()=>{});sNotify();});
+  A.addEventListener('error',()=>{
+    if(++failed>=TRACKS.length){const was=sPlaying;sPlaying=false;useGen=true;if(was)GEN.start();sNotify();}
+    else if(sPlaying){load(ti+1);const p=A.play();if(p&&p.catch)p.catch(()=>{});}
+  });
+  A.addEventListener('timeupdate',()=>{
+    if(A.duration&&A.duration-A.currentTime<25){const n=(ti+1)%TRACKS.length;if(preFor!==n){preFor=n;pre=new Audio();pre.preload='auto';pre.src=TRACKS[n].src;}}
+  });
+  A.addEventListener('playing',sNotify);
+  document.addEventListener('visibilitychange',()=>{
+    if(useGen)return;
+    if(document.hidden){if(sPlaying){A.pause();hidPaused=true;}}
+    else if(hidPaused){hidPaused=false;const p=A.play();if(p&&p.catch)p.catch(()=>{});}
+  });
+  new MutationObserver(()=>{sduck=document.body.classList.contains('cz-open')?.3:1;if(sPlaying&&!useGen)fadeTo(target(),400);}).observe(document.body,{attributes:true,attributeFilter:['class']});
+  /* el primer toque en cualquier parte enciende la música (salvo que la persona la haya pausado antes) */
+  (function(){
+    if(store.get('musicOff',0))return;
+    const evs=['pointerdown','keydown','touchend'];
+    const go=e=>{
+      if(e&&e.target&&e.target.closest&&e.target.closest('#musicBtn,#tsMusic'))return;
+      evs.forEach(n=>removeEventListener(n,go,true));
+      if(!MUSIC.playing&&!store.get('musicOff',0))sStart();
+    };
+    evs.forEach(n=>addEventListener(n,go,true));
+  })();
+
+  return {
+    start:sStart,stop:()=>sStop(true),stopQuiet:()=>sStop(false),
+    toggle(){MUSIC.playing?sStop(true):sStart();},
+    restart(){if(useGen)return;if(!sPlaying)return sStart();A.currentTime=0;A.volume=0;fadeTo(target(),900);},
+    setFlavor(c){if(useGen)GEN.setFlavor(c);},
+    setVolume(v){svol=Math.max(0,Math.min(1,v));store.set('musicVol',svol);if(useGen)GEN.setVolume(v);else if(sPlaying)fadeTo(target(),150);},
+    get playing(){return useGen?GEN.playing:sPlaying;},
+    get volume(){return svol;},
+    get songs(){return !useGen;},
+    get now(){return TRACKS[ti].name;},
+    styleName(id){return useGen?GEN.styleName(id):TRACKS[ti].name;},
+    onChange(f){sHooks.push(f);GEN.onChange(f);},
+    make:GEN.make,ST:GEN.ST,MAP:GEN.MAP
   };
 })();
 
@@ -2089,7 +2164,7 @@ const MUSIC=(function(){
   MUSIC.onChange(paint);
   b.onclick=()=>MUSIC.toggle();
   paint(false);
-  if(!store.get('musicHint',0))setTimeout(()=>{if(!MUSIC.playing&&!document.body.classList.contains('cz-open')){toast('Toca ♪ para poner música');store.set('musicHint',1);}},5600);
+  if(!store.get('musicHint',0))setTimeout(()=>{if(!MUSIC.playing&&!document.body.classList.contains('cz-open')){toast('Toca la pantalla y suena la música ♪');store.set('musicHint',1);}},5600);
 })();
 
 /* ----- decoración lateral: hojas, pétalos, menta, hielo ----- */
@@ -3629,7 +3704,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
   function paintMusic(){
     if(!sheet)return;const on=MUSIC.playing,tm=sheet.querySelector('#tsMusic'),ts=sheet.querySelector('#tsStyle');
     tm.textContent=on?'❚❚ Pausar música':'▶ Poner música';tm.setAttribute('aria-pressed',on);
-    ts.textContent='Estilo de este sabor: '+MUSIC.styleName()+'. Cambia con cada sabor.';
+    ts.textContent=MUSIC.songs?'Sonando: '+MUSIC.styleName()+' · Luister La Voz':'Estilo de este sabor: '+MUSIC.styleName()+'. Cambia con cada sabor.';
   }
   MUSIC.onChange(paintMusic);
   function paintSheet(){if(!sheet)return;paintMusic();sheet.querySelectorAll('.ts-it[data-i]').forEach(b=>b.classList.toggle('on',+b.dataset.i===cur));}
@@ -4367,7 +4442,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     document.documentElement.style.scrollBehavior='auto';
     scrollTo(0,0);
     {const st=$('#stage'),r=st.getBoundingClientRect(),vh=innerHeight,dy=Math.max(-vh*.2,Math.min(vh*.25,vh*.5-(r.top+r.height/2)));st.style.translate=innerWidth>820?'0 '+Math.round(dy)+'px':'0 9vh';st.style.scale=innerWidth>820?'':'.84';}
-    if(window.MUSIC&&!MUSIC.playing){try{MUSIC.start();}catch(e){}}
+    if(window.MUSIC){try{MUSIC.restart?MUSIC.restart():MUSIC.start();}catch(e){}}
     if(window.TRACK)TRACK('show');
     build();
     addEventListener('keydown',onKey,true);addEventListener('wheel',block,{passive:false,capture:true});addEventListener('touchmove',block,{passive:false,capture:true});
@@ -4387,7 +4462,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     if(prev){
       try{applyFlavor(prev.cur);}catch(e){}
       manual=prev.manual;if(!manual)schedule();
-      if(!prev.music&&window.MUSIC&&MUSIC.playing){try{MUSIC.stop();}catch(e){}}
+      if(!prev.music&&window.MUSIC&&MUSIC.playing){try{(MUSIC.stopQuiet||MUSIC.stop)();}catch(e){}}
     }
     prev=null;
   }
