@@ -1419,7 +1419,9 @@ body.show #showui button{cursor:pointer!important}
 .cz-frame.rz{grid-template-rows:auto minmax(0,1fr) auto;padding-top:min(env(safe-area-inset-top,0px),44px);padding-bottom:0}
 .rz-main{position:relative;z-index:1;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr);gap:4px;padding:0 16px}
 .rz-wheelbox{position:relative;display:grid;justify-items:center;gap:4px}
-.rz #czcv{width:min(78vw,31svh,400px);aspect-ratio:1;display:block;filter:drop-shadow(0 18px 22px rgba(0,0,0,.6))}
+.rz-cvbox{position:relative;width:min(78vw,31svh,400px);aspect-ratio:1;filter:drop-shadow(0 18px 22px rgba(0,0,0,.6))}
+.rz-cvbox canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#czgl{display:none}.rz-cvbox.gl #czgl{display:block}.rz-cvbox.gl #czcv{display:none}
 .rz .cz-msg{position:static;translate:none;max-width:94%;font-size:clamp(.82rem,3.2vw,1rem);padding:5px 16px}
 .rz-hist{display:flex;gap:4px;justify-content:center;flex-wrap:nowrap;min-height:24px;align-items:center;color:rgba(255,255,255,.6);font-size:.72rem}
 .rz-h{display:grid;place-items:center;width:23px;height:23px;border-radius:50%;font-style:normal;font-weight:800;font-size:.66rem;color:#fff;border:1.5px solid rgb(var(--gold2-rgb)/.8);flex:none}
@@ -1474,13 +1476,13 @@ body.show #showui button{cursor:pointer!important}
 @media(min-width:900px){
   .rz-main{grid-template-columns:minmax(0,1fr) minmax(340px,430px);grid-template-rows:minmax(0,1fr);gap:28px;padding:0 36px;align-items:center}
   .rz-wheelbox{align-self:center}
-  .rz #czcv{width:min(46vw,calc(100svh - 330px),560px)}
+  .rz-cvbox{width:min(46vw,calc(100svh - 330px),560px)}
   .rz-tablebox{align-self:stretch}
   .rz-hist{min-height:30px}.rz-h{width:27px;height:27px;font-size:.74rem}
   .rz-c{min-height:40px}
 }
 @media(max-width:380px){.rz-chipb{width:38px;height:38px}.rz-acts button{width:36px}.rz-main{padding:0 10px}}
-@media(max-width:520px){.rz #czcv{width:min(70vw,27svh,400px)}.rz-row{gap:8px;flex-wrap:nowrap}.rz-chips{gap:5px}.rz-chipb{width:36px;height:36px;font-size:.74rem}.rz-acts{gap:4px}.rz-acts button{width:33px;height:33px;border-radius:9px}.rz .cz-spin{padding:10px 24px}.rz-bar{gap:5px}}
+@media(max-width:520px){.rz-cvbox{width:min(80vw,30svh,400px)}.rz-row{gap:8px;flex-wrap:nowrap}.rz-chips{gap:5px}.rz-chipb{width:36px;height:36px;font-size:.74rem}.rz-acts{gap:4px}.rz-acts button{width:33px;height:33px;border-radius:9px}.rz .cz-spin{padding:10px 24px}.rz-bar{gap:5px}}
 </style>
 </head>
 <body>
@@ -1762,7 +1764,7 @@ body.show #showui button{cursor:pointer!important}
     </header>
     <div class="rz-main">
       <section class="rz-wheelbox">
-        <canvas id="czcv" role="img" aria-label="Ruleta europea de 37 números"></canvas>
+        <div class="rz-cvbox"><canvas id="czcv" role="img" aria-label="Ruleta europea de 37 números"></canvas><canvas id="czgl" aria-hidden="true"></canvas></div>
         <div class="cz-msg" id="czMsg" aria-live="polite">Hagan sus apuestas</div>
         <div class="rz-hist" id="rzHist" aria-label="Últimos números"></div>
       </section>
@@ -3174,6 +3176,172 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
 })();
 
 /* =====================================================================
+   RULETA EN 3D (Three.js se descarga solo cuando hace falta; si no carga o no hay WebGL, el casino sigue en 2D).
+   Bowl de madera barnizada, aros dorados, pendiente de la bola, bolsillos con separadores, cono dorado con torreta,
+   luces con sombras y una cámara que respira. El dibujo de números y sabores viene del lienzo 2D como textura.
+   ===================================================================== */
+const RZ3=(function(){
+  const R=5,TAU=Math.PI*2,NP=37,step=TAU/NP,RW=R*.715;       // RW = radio donde termina la rueda y empieza la pendiente
+  let renderer=null,scene=null,camera=null,wheel=null,ball=null,disc=null,tex=null,hl=null,hlIdx=-1,ready=false,loading=null;
+  let camD=23,shake=0,lastState='bet',sizePx=0;
+  const SRC='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+
+  function load(){
+    if(window.THREE)return Promise.resolve(true);
+    if(loading)return loading;
+    loading=new Promise(res=>{
+      let done=false;const fin=ok=>{if(!done){done=true;if(!ok)loading=null;res(ok);}};
+      const s=document.createElement('script');s.src=SRC;s.async=true;
+      s.onload=()=>fin(!!window.THREE);s.onerror=()=>fin(false);document.head.appendChild(s);
+      setTimeout(()=>fin(false),10000);
+    });
+    return loading;
+  }
+
+  /* ---------- texturas hechas a mano ---------- */
+  function woodTex(){
+    const c=document.createElement('canvas');c.width=c.height=512;const g=c.getContext('2d');
+    g.fillStyle='#5a2d0f';g.fillRect(0,0,512,512);
+    for(let i=0;i<300;i++){
+      const y=Math.random()*512,h=1+Math.random()*3.5,a=.05+Math.random()*.17;
+      g.fillStyle=Math.random()<.55?`rgba(28,10,2,${a})`:`rgba(196,125,62,${a*.75})`;
+      g.beginPath();g.moveTo(0,y);for(let x=0;x<=512;x+=32)g.lineTo(x,y+Math.sin(x*.02+i)*3);g.lineTo(512,y+h);g.lineTo(0,y+h);g.closePath();g.fill();
+    }
+    const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(10,1);t.encoding=THREE.sRGBEncoding;t.anisotropy=4;return t;
+  }
+  function setEnv(){
+    const c=document.createElement('canvas');c.width=1024;c.height=512;const g=c.getContext('2d');
+    const gr=g.createLinearGradient(0,0,0,512);gr.addColorStop(0,'#4a3520');gr.addColorStop(.5,'#160c06');gr.addColorStop(1,'#050302');g.fillStyle=gr;g.fillRect(0,0,1024,512);
+    [[.16,.2,.17,'255,240,208'],[.6,.18,.22,'255,226,176'],[.84,.34,.12,'255,176,112'],[.38,.42,.1,'255,255,255'],[.04,.38,.1,'255,90,168'],[.5,.5,.28,'110,70,30']].forEach(s=>{
+      const x=s[0]*1024,y=s[1]*512,r=s[2]*512,rg=g.createRadialGradient(x,y,0,x,y,r);rg.addColorStop(0,`rgba(${s[3]},.95)`);rg.addColorStop(1,`rgba(${s[3]},0)`);g.fillStyle=rg;g.fillRect(0,0,1024,512);
+    });
+    const t=new THREE.CanvasTexture(c);t.mapping=THREE.EquirectangularReflectionMapping;t.encoding=THREE.sRGBEncoding;
+    const pm=new THREE.PMREMGenerator(renderer),rt=pm.fromEquirectangular(t);scene.environment=rt.texture;pm.dispose();t.dispose();
+  }
+
+  /* ---------- escena ---------- */
+  function lathe(pts,mat,seg){
+    const m=new THREE.Mesh(new THREE.LatheGeometry(pts.map(p=>new THREE.Vector2(p[0],p[1])),seg||160),mat);return m;
+  }
+  function build(texCanvas){
+    scene=new THREE.Scene();
+    camera=new THREE.PerspectiveCamera(30,1,.5,120);
+    setEnv();
+    const gold=new THREE.MeshStandardMaterial({color:0xdaa93a,metalness:1,roughness:.24});
+    const goldD=new THREE.MeshStandardMaterial({color:0xb8861a,metalness:1,roughness:.34});
+    const wood=new THREE.MeshPhysicalMaterial({map:woodTex(),roughness:.38,metalness:.05,clearcoat:1,clearcoatRoughness:.1,side:THREE.DoubleSide});
+    const lacquer=new THREE.MeshStandardMaterial({color:0x13131a,metalness:.6,roughness:.2,side:THREE.DoubleSide});
+    /* aro exterior de madera */
+    const rim=lathe([[R*1.17,-1.3],[R*1.19,-.8],[R*1.17,-.15],[R*1.11,.36],[R*1.05,.62],[R*.99,.7],[R*.945,.62],[R*.93,.5]],wood,180);
+    rim.castShadow=true;rim.receiveShadow=true;scene.add(rim);
+    /* pendiente por donde corre la bola */
+    const tp=[];for(let k=0;k<=26;k++){const u=1-k/26,r=RW+u*(R*.93-RW);tp.push([r,.06+.44*Math.pow(u,1.7)]);}
+    const track=lathe(tp,lacquer,180);track.receiveShadow=true;scene.add(track);
+    /* aros dorados */
+    const torus=(r,y,tube,m)=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r,tube,20,200),m);t.rotation.x=-Math.PI/2;t.position.y=y;scene.add(t);return t;};
+    torus(R*.985,.71,.07,gold);torus(R*.93,.5,.05,goldD);torus(RW,.07,.04,gold);
+    /* deflectores */
+    for(let k=0;k<8;k++){
+      const a=k*TAU/8+Math.PI/8,r=R*.845,u=(r-RW)/(R*.93-RW),y=.06+.44*Math.pow(u,1.7)+.1;
+      const d=new THREE.Mesh(new THREE.OctahedronGeometry(.21,0),gold);d.scale.set(.7,1.5,.7);d.position.set(r*Math.sin(a),y,-r*Math.cos(a));d.castShadow=true;scene.add(d);
+    }
+    /* sombra de apoyo */
+    const gnd=new THREE.Mesh(new THREE.CircleGeometry(R*2.1,64),new THREE.ShadowMaterial({opacity:.38}));gnd.rotation.x=-Math.PI/2;gnd.position.y=-1.32;gnd.receiveShadow=true;scene.add(gnd);
+
+    /* rueda que gira */
+    wheel=new THREE.Group();scene.add(wheel);
+    const Rg=RW/.71;
+    tex=new THREE.CanvasTexture(texCanvas);tex.encoding=THREE.sRGBEncoding;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+    disc=new THREE.Mesh(new THREE.CircleGeometry(Rg,128),new THREE.MeshPhysicalMaterial({map:tex,transparent:true,roughness:.5,metalness:.08,clearcoat:.7,clearcoatRoughness:.2}));
+    disc.rotation.x=-Math.PI/2;disc.position.y=.05;disc.receiveShadow=true;wheel.add(disc);
+    /* base oscura bajo la textura (para que los bordes translúcidos no dejen ver el fondo) */
+    const under=new THREE.Mesh(new THREE.CircleGeometry(RW*1.01,96),new THREE.MeshStandardMaterial({color:0x0c0c10,roughness:.6}));under.rotation.x=-Math.PI/2;under.position.y=.04;wheel.add(under);
+    /* separadores de bolsillos */
+    const fIn=.36*Rg,fOut=.71*Rg,len=fOut-fIn,fm=(fIn+fOut)/2;
+    const fretG=new THREE.BoxGeometry(len,.11,.045);
+    for(let i=0;i<NP;i++){
+      const a=i*step-step/2,f=new THREE.Mesh(fretG,goldD);
+      f.position.set(fm*Math.sin(a),.1,-fm*Math.cos(a));f.rotation.y=Math.PI/2-a;f.castShadow=true;wheel.add(f);
+    }
+    /* cono central dorado */
+    const rIn=.36*Rg;
+    const cone=lathe([[rIn,.06],[rIn*.94,.2],[rIn*.74,.45],[rIn*.5,.72],[rIn*.28,.98],[rIn*.14,1.1],[0,1.16]],gold,96);
+    cone.castShadow=true;wheel.add(cone);
+    const hub=new THREE.Mesh(new THREE.CylinderGeometry(.16,.2,.34,32),goldD);hub.position.y=1.28;hub.castShadow=true;wheel.add(hub);
+    const knob=new THREE.Mesh(new THREE.SphereGeometry(.21,32,24),gold);knob.position.y=1.55;knob.castShadow=true;wheel.add(knob);
+    for(let k=0;k<4;k++){
+      const arm=new THREE.Group();arm.rotation.y=k*Math.PI/2;
+      const bar=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,rIn*.82,12),goldD);bar.rotation.z=Math.PI/2;bar.position.set(rIn*.41+.1,1.27,0);arm.add(bar);
+      const bead=new THREE.Mesh(new THREE.SphereGeometry(.1,20,16),gold);bead.position.set(rIn*.82+.1,1.27,0);bead.castShadow=true;arm.add(bead);
+      wheel.add(arm);
+    }
+    /* bola */
+    ball=new THREE.Mesh(new THREE.SphereGeometry(.17,40,30),new THREE.MeshPhysicalMaterial({color:0xf9f8f1,roughness:.1,metalness:.05,clearcoat:1,clearcoatRoughness:.05}));
+    ball.castShadow=true;scene.add(ball);
+    /* luces */
+    scene.add(new THREE.HemisphereLight(0xfff1d6,0x1a0f05,.42));
+    const key=new THREE.SpotLight(0xffe9c4,1.55,80,.62,.6,1);key.position.set(5,22,9);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.bias=-.0004;key.shadow.radius=3;scene.add(key);key.target.position.set(0,0,0);scene.add(key.target);
+    const warm=new THREE.PointLight(0xffc060,.9,40);warm.position.set(-9,5,6);scene.add(warm);
+    const neon=new THREE.PointLight(0xff2d95,.7,40);neon.position.set(9,4,-9);scene.add(neon);
+    const cool=new THREE.PointLight(0x7fd0ff,.35,40);cool.position.set(-6,6,-10);scene.add(cool);
+  }
+
+  function init(canvas,texCanvas){
+    if(ready)return true;
+    try{
+      renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+      renderer.setClearColor(0x000000,0);
+      renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;
+      renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+      build(texCanvas);ready=true;return true;
+    }catch(e){ready=false;try{renderer&&renderer.dispose();}catch(_){}renderer=null;return false;}
+  }
+  function resize(px,dpr){
+    if(!ready)return;sizePx=px;
+    renderer.setPixelRatio(Math.min(dpr,2));renderer.setSize(px,px,false);camera.aspect=1;camera.updateProjectionMatrix();
+  }
+  function setTexture(canvas){
+    if(!ready||!disc)return;
+    if(tex)tex.dispose();
+    tex=new THREE.CanvasTexture(canvas);tex.encoding=THREE.sRGBEncoding;tex.anisotropy=renderer.capabilities.getMaxAnisotropy();
+    disc.material.map=tex;disc.material.needsUpdate=true;
+  }
+  function ring(idx){
+    if(hl){wheel.remove(hl);hl.geometry.dispose();hl.material.dispose();hl=null;}
+    hlIdx=idx;if(idx<0)return;
+    const Rg=RW/.71,a=idx*step,g=new THREE.RingGeometry(.36*Rg,.71*Rg,24,1,Math.PI/2-a-step/2,step);
+    hl=new THREE.Mesh(g,new THREE.MeshBasicMaterial({color:0xfff0b0,transparent:true,opacity:.6,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide}));
+    hl.rotation.x=-Math.PI/2;hl.position.y=.13;wheel.add(hl);
+  }
+
+  /* s: {W, ballA, ballR, state, winIdx, glow, t, showBall} — los ángulos se miden desde arriba, en sentido horario */
+  function render(s){
+    if(!ready)return;
+    const t=s.t/1000;
+    wheel.rotation.y=-s.W;
+    const a=s.ballA,r=s.ballR*R;
+    let y;
+    if(r>=RW){const u=Math.min(1,(r-RW)/(R*.93-RW));y=.06+.44*Math.pow(u,1.7)+.17;}
+    else y=(s.state==='spin'?.24:.2);
+    ball.visible=!!s.showBall;
+    ball.position.set(r*Math.sin(a),y,-r*Math.cos(a));
+    /* resalta el bolsillo ganador */
+    if(s.state==='done'&&s.winIdx!=null){if(hlIdx!==s.winIdx)ring(s.winIdx);hl.material.opacity=.5+.3*Math.sin(s.glow);}
+    else if(hlIdx>=0)ring(-1);
+    /* cámara: respira en reposo, se acerca al girar y vibra al caer la bola */
+    if(s.state==='done'&&lastState==='spin')shake=1;
+    lastState=s.state;
+    const tgt=s.state==='spin'?21.8:23;camD+=(tgt-camD)*.035;
+    const az=Math.sin(t*.28)*.1,el=(52+Math.sin(t*.21)*1.6)*Math.PI/180;
+    const sh=shake*(.12);shake*=.92;if(shake<.01)shake=0;
+    camera.position.set(camD*Math.cos(el)*Math.sin(az)+(Math.random()-.5)*sh,camD*Math.sin(el)+(Math.random()-.5)*sh,camD*Math.cos(el)*Math.cos(az));
+    camera.lookAt(0,-.3,0);
+    renderer.render(scene,camera);
+  }
+  return {load,init,resize,setTexture,render,get ready(){return ready;},get loaded(){return !!window.THREE;}};
+})();
+
+/* =====================================================================
    MODO CASINO — ruleta europea de 37 números con mesa de apuestas, fichas y banca de juego.
    Sin dinero real: las fichas son de mentira. El número ganador siempre trae un sabor para pedir.
    Apuestas: pleno (35:1), docenas y columnas (2:1), rojo/negro, par/impar, 1-18/19-36 (1:1)
@@ -3314,15 +3482,12 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   /* ---------- tamaño y caché de la ruleta ---------- */
   function mk(s){const c=document.createElement('canvas');c.width=c.height=s;return c;}
   function size(){
-    const s=cv.clientWidth;if(!s)return;S=s;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(s*dpr);cv.height=Math.round(s*dpr);
+    const s=$('.rz-cvbox').clientWidth;if(!s)return;S=s;dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(s*dpr);cv.height=Math.round(s*dpr);
     coinsCv.width=innerWidth;coinsCv.height=innerHeight;buildCache();
+    if(use3d)RZ3.resize(s,SMALL?Math.min(dpr,1.75):dpr);
   }
   const disc=(x,y,r,fill,c)=>{c.beginPath();c.arc(x,y,r,0,TAU);c.fillStyle=fill;c.fill();};
-  function buildCache(){
-    if(!S)return;
-    const px=Math.round(S*dpr);baseCv=mk(px);wheelCv=mk(px);
-    const b=baseCv.getContext('2d'),w=wheelCv.getContext('2d');
-    b.setTransform(dpr,0,0,dpr,0,0);w.setTransform(dpr,0,0,dpr,0,0);
+  function paintBase(b,S){
     const R=S/2,c=R;
     /* marco de madera, aros dorados y pista de la bola */
     let wg=b.createRadialGradient(c,c,R*.82,c,c,R);wg.addColorStop(0,'#5a3410');wg.addColorStop(.5,'#9a6a2a');wg.addColorStop(1,'#2e1b08');
@@ -3337,6 +3502,9 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
       const dl=S*.026;b.beginPath();b.moveTo(0,-dl);b.lineTo(dl*.55,0);b.lineTo(0,dl);b.lineTo(-dl*.55,0);b.closePath();
       let dgr=b.createLinearGradient(-dl,0,dl,0);dgr.addColorStop(0,'#fff3b8');dgr.addColorStop(1,'#a87a14');b.fillStyle=dgr;b.fill();b.restore();
     }
+  }
+  function paintWheel(w,S){
+    const R=S/2,c=R;
     /* rueda: bolsillos con número y sabor */
     const rIn=R*.36,rOut=R*.71;
     for(let i=0;i<NP;i++){
@@ -3366,11 +3534,32 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     const kn=w.createRadialGradient(c-R*.02,c-R*.03,1,c,c,R*.09);kn.addColorStop(0,'#fff');kn.addColorStop(.35,'#f6d97f');kn.addColorStop(1,'#8a5f10');
     disc(c,c,R*.09,kn,w);
   }
-
+  function buildCache(){
+    if(!S)return;
+    const px=Math.round(S*dpr);baseCv=mk(px);wheelCv=mk(px);
+    const b=baseCv.getContext('2d'),w=wheelCv.getContext('2d');
+    b.setTransform(dpr,0,0,dpr,0,0);w.setTransform(dpr,0,0,dpr,0,0);
+    paintBase(b,S);paintWheel(w,S);
+    if(use3d)RZ3.setTexture(texCanvas());
+  }
+  function texCanvas(){const T=SMALL?1024:2048,c=mk(T);paintWheel(c.getContext('2d'),T);return c;}
+  /* ---------- versión 3D: se activa sola cuando Three.js termina de cargar ---------- */
+  const gl=$('#czgl'),box=$('.rz-cvbox');let use3d=false;
+  function enable3d(){
+    if(use3d||!isOpen)return;
+    if(!RZ3.loaded||!S)return;
+    if(!RZ3.init(gl,texCanvas()))return;
+    use3d=true;box.classList.add('gl');size();draw();
+  }
+  function try3d(){RZ3.load().then(ok=>{if(ok)enable3d();});}
+  if('IntersectionObserver' in window&&!(navigator.connection&&navigator.connection.saveData)){
+    new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();RZ3.load();}},{rootMargin:'900px'}).observe($('#casinoOpen'));
+  }
   /* ---------- dibujo de cada cuadro ---------- */
   function ballPos(a,r){const c=S/2;return[c+r*S/2*Math.sin(a),c-r*S/2*Math.cos(a)];}
-  function draw(){
+  function draw(ts){
     if(!S||!baseCv)return;
+    if(use3d){RZ3.render({W,ballA,ballR,state,winIdx,glow:(glow+=state==='done'?.09:0),t:ts||performance.now(),showBall:state==='spin'||winIdx!==null});return;}
     g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,S,S);
     const c=S/2,R=c;
     g.drawImage(baseCv,0,0,S,S);
@@ -3412,7 +3601,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
   }
   function loop(ts){
     if(!isOpen){raf=0;return;}
-    update(ts);draw();drawCoins(Math.min(.05,(ts-lastC)/1000||.016));lastC=ts;
+    update(ts);draw(ts);drawCoins(Math.min(.05,(ts-lastC)/1000||.016));lastC=ts;
     raf=requestAnimationFrame(loop);
   }
 
@@ -3522,7 +3711,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
     state='bet';bets={};undo=[];winIdx=null;shot=null;clearMarks();hideResult();root.classList.remove('spinning');
     if(bank<1)bank=START;
     paintChips();paintHist();paintBets();paintRefill();msg('Hagan sus apuestas');countBank();
-    requestAnimationFrame(()=>{root.classList.add('show');size();draw();if(!raf){lastT=lastC=performance.now();raf=requestAnimationFrame(loop);}});
+    requestAnimationFrame(()=>{root.classList.add('show');size();draw();if(!raf){lastT=lastC=performance.now();raf=requestAnimationFrame(loop);}if(use3d)RZ3.resize(S,SMALL?Math.min(dpr,1.75):dpr);else try3d();});
   }
   function close(){
     if(!isOpen)return;isOpen=false;
