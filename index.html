@@ -1434,7 +1434,6 @@ body.show #showui button{cursor:pointer!important}
         <li class="sndli"><button id="sndBtn" type="button" aria-pressed="false">Sonido apagado</button></li>
       </ul>
       <div class="nav-r">
-        <button class="mbtn" id="musicBtn" type="button" aria-pressed="false" aria-label="Poner música"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><circle cx="7" cy="18" r="2.4"/><circle cx="17" cy="16" r="2.4"/></svg><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span></button>
         <button class="themebtn" id="themeBtn" type="button" aria-haspopup="dialog" aria-label="Cambiar el tema de la página"><img src="img/t-coco.webp" alt="" width="24" height="34"><span>Coco</span><i>▾</i></button>
         <button class="cart-btn" id="cartOpen" aria-label="Abrir pedido"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg> Pedido<b id="count">0</b></button>
         <button class="trophy" id="lgOpen" type="button" aria-label="Mis logros"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M9 20h6M10 17h4"/></svg><b id="lgCount">0</b></button>
@@ -1830,7 +1829,7 @@ const LOGROS=[
   ['slots','Jackpot','Saca tres iguales en la tragamonedas'],
   ['combo','Combo sorpresa','Agrega el combo de la tragamonedas'],
   ['trivia','Sabelotodo','Acierta 6 preguntas en la trivia'],
-  ['fiesta','Alma de fiesta','Pon música en la página'],
+  ['fiesta','Alma de fiesta','Agrega un cóctel y disfruta su canción'],
   ['hielo','Corazón de hielo','Atrapa un cubo de hielo en Atrapa la fruta'],
   ['fiel','Cliente fiel','Visita la página en 3 días distintos'],
   ['caja','Caja armada','Arma una caja lista de 6 o 12 latas']
@@ -2169,7 +2168,7 @@ const MUSIC=(function(){
   /* el primer toque en cualquier parte enciende la música (salvo que la persona la haya pausado); si el navegador la rechaza, se reintenta en el siguiente toque */
   const AEV=['pointerdown','click','touchend','keydown'];let armed=false;
   function disarm(){armed=false;AEV.forEach(n=>removeEventListener(n,go,true));}
-  function armAuto(){if(armed||useGen||OFF.get())return;armed=true;AEV.forEach(n=>addEventListener(n,go,true));}
+  function armAuto(){}   // ya no arranca sola con un toque: la enciende agregar un producto al pedido
   function go(e){
     if(e&&e.target&&e.target.closest&&e.target.closest('#musicBtn,#tsMusic'))return;
     if(MUSIC.playing&&!A.paused){disarm();return;}
@@ -2178,9 +2177,23 @@ const MUSIC=(function(){
     const p=sStart();
     if(p&&p.then)p.then(disarm,()=>{});else disarm();
   }
-  armAuto();
+
+  /* cada cóctel tiene su canción: al agregarlo al pedido suena la que le corresponde */
+  const SONGOF={coco:2,pina:0,rose:2,margarita:1,beach:0,ruby:2,mojito:1,mule:1,hpnotiq:0,sinaloa:0,tamarindo:1,smirnoff:1,sangria:2};   // 0 = 6 AM · 1 = El Capataz · 2 = Amarte más no pude
+  let lastSwitch=0;
+  function forProduct(id){
+    if(useGen)return sStart();
+    const want=SONGOF[id];
+    if(want==null)return sPlaying?undefined:sStart();
+    if(!sPlaying){load(want);lastSwitch=Date.now();return sStart();}
+    if(ti!==want&&Date.now()-lastSwitch>12000){
+      lastSwitch=Date.now();
+      fadeTo(0,550,()=>{if(!sPlaying)return;load(want);const p=A.play();if(p&&p.catch)p.catch(()=>{});fadeTo(target(),1000);sNotify();});
+    }
+  }
 
   return {
+    forProduct,
     start:sStart,stop:()=>sStop(true),stopQuiet:()=>sStop(false),
     toggle(){MUSIC.playing?sStop(true):sStart();},
     restart(){if(useGen)return;if(!sPlaying)return sStart();A.currentTime=0;if(gn)gn.gain.value=0;else A.volume=0;fadeTo(target(),900);},
@@ -2484,7 +2497,7 @@ function add(id,d=1,from=null){
   const before=Object.values(cart).reduce((s,q)=>s+q,0);
   cart[id]=Math.max(0,(cart[id]||0)+d);if(!cart[id])delete cart[id];
   store.set('cart',cart);draw();
-  if(d>0){if(window.TRACK){TRACK('agregar');TRACK('sabor-'+id);}toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);vib(12);SND.pop();award('pedido');milestone(before);}
+  if(d>0){if(window.TRACK){TRACK('agregar');TRACK('sabor-'+id);}if(typeof MUSIC!=='undefined')MUSIC.forProduct(id);toast(`✓ ${byId[id].name} agregado`);fly(byId[id].thumb,from);fruitBurst(from,id);vib(12);SND.pop();award('pedido');milestone(before);}
 }
 function renderActs(){
   $$('.act').forEach(el=>{
@@ -3728,11 +3741,8 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     sheet.setAttribute('role','dialog');sheet.setAttribute('aria-modal','true');sheet.setAttribute('aria-label','Elegir el sabor y el tema de la página');
     sheet.innerHTML=`<div class="ts-back" data-ts></div><div class="ts-panel"><div class="ts-grab"></div><h3>Tema de la página</h3><p class="ts-sub">Elige un sabor y todo el sitio se viste de su color</p><div class="ts-grid">${
       CANS.map((c,i)=>`<button type="button" class="ts-it" data-i="${i}" style="--t1:${c.t.hb1};--t2:${c.t.hb2};--ti:${c.t.ink}"><img src="${c.thumb}" alt="" loading="lazy"><span>${c.short}</span></button>`).join('')
-    }<button type="button" class="ts-it ts-rnd" data-rnd="1">↻ Sorpréndeme</button></div>
-      <div class="ts-music"><button type="button" id="tsMusic" aria-pressed="false">▶ Poner música</button><input type="range" id="tsVol" min="0" max="100" step="5" aria-label="Volumen de la música"><small id="tsStyle"></small></div></div>`;
+    }<button type="button" class="ts-it ts-rnd" data-rnd="1">↻ Sorpréndeme</button></div></div>`;
     document.body.appendChild(sheet);
-    const tm=sheet.querySelector('#tsMusic'),tv=sheet.querySelector('#tsVol');
-    tv.value=Math.round(MUSIC.volume*100);tm.onclick=()=>MUSIC.toggle();tv.oninput=()=>MUSIC.setVolume(tv.value/100);paintMusic();
     sheet.addEventListener('click',e=>{
       if(e.target.closest('[data-ts]')){closeSheet();return;}
       const b=e.target.closest('[data-i],[data-rnd]');if(!b)return;
@@ -3742,7 +3752,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
     });
   }
   function paintMusic(){
-    if(!sheet)return;const on=MUSIC.playing,tm=sheet.querySelector('#tsMusic'),ts=sheet.querySelector('#tsStyle');
+    if(!sheet||!sheet.querySelector('#tsMusic'))return;const on=MUSIC.playing,tm=sheet.querySelector('#tsMusic'),ts=sheet.querySelector('#tsStyle');
     tm.textContent=on?'❚❚ Pausar música':'▶ Poner música';tm.setAttribute('aria-pressed',on);
     ts.textContent=MUSIC.songs?'Sonando: '+MUSIC.styleName()+' · Luister La Voz':'Estilo de este sabor: '+MUSIC.styleName()+'. Cambia con cada sabor.';
   }
@@ -3815,6 +3825,7 @@ if(window.CSS&&CSS.supports&&CSS.supports('animation-timeline','view()'))documen
       if(!reduce)pick.slice(0,5).forEach((id,i)=>setTimeout(()=>fly(byId[id].thumb,b),i*120));
       toast(`¡Tu caja de ${n} está lista! Revisa tu pedido`);vib([20,40,20]);SND.pop();award('pedido');if(n>=6)award('caja');milestone(before);
       if(window.TRACK){TRACK('caja-'+n);TRACK('agregar');}
+      if(typeof MUSIC!=='undefined')MUSIC.forProduct(pick[0]);
     });
   })();
 
