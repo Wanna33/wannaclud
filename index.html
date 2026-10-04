@@ -8,6 +8,14 @@
 <meta property="og:title" content="WannaClud Cócteles">
 <meta property="og:description" content="Cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
 <meta property="og:type" content="website">
+<meta property="og:locale" content="es_CO">
+<meta property="og:site_name" content="WannaClud Cócteles">
+<meta property="og:image:alt" content="Logo de WannaClud Cócteles">
+<meta name="twitter:title" content="WannaClud Cócteles">
+<meta name="twitter:description" content="Cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.">
+<meta name="twitter:image" content="https://wanna33.github.io/wannaclud/img/logo.webp">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:url" content="https://wanna33.github.io/wannaclud/">
 <meta property="og:image" content="https://wanna33.github.io/wannaclud/img/logo.webp">
 <meta name="twitter:card" content="summary_large_image">
@@ -25,6 +33,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WannaClud">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Store","name":"WannaClud Cócteles","description":"Cócteles preparados en lata. Elige tu sabor y pide por WhatsApp.","url":"https://wanna33.github.io/wannaclud/","logo":"https://wanna33.github.io/wannaclud/img/logo.webp","image":"https://wanna33.github.io/wannaclud/img/logo.webp","telephone":"+573102035327","priceRange":"$25.000 COP","areaServed":{"@type":"Country","name":"Colombia"},"inLanguage":"es"}
+</script>
 <noscript><style>#intro{display:none}</style></noscript>
 <style>
 :root{
@@ -429,6 +440,8 @@ body.has-cart .wa{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
    ===================================================================== */
 ::selection{background:var(--gold);color:#111}
 :focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
+.skip{position:fixed;left:12px;top:-60px;z-index:100000;padding:10px 16px;border-radius:10px;background:#111;color:#fff;font:600 14px Poppins,sans-serif;transition:top .2s}
+.skip:focus{top:12px}
 html{scrollbar-color:var(--c7) var(--bg);scrollbar-width:thin}
 .ico{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:2px}
 
@@ -1604,6 +1617,7 @@ body.show #showui button{cursor:pointer!important}
 </style>
 </head>
 <body>
+<a class="skip" href="#main">Saltar al contenido</a>
 <div id="intro" aria-label="Cargando">
   <div class="in-spark" id="spark"></div>
   <div class="in-box">
@@ -1642,7 +1656,7 @@ body.show #showui button{cursor:pointer!important}
   </div>
 </header>
 
-<main>
+<main id="main">
 <!-- ================= INICIO ================= -->
 <section class="hero" id="inicio">
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
@@ -5207,6 +5221,26 @@ function fxFrame(){
 window.fxKick=()=>{if(!fxOn&&heroVis&&!reduce){fxOn=true;requestAnimationFrame(fxFrame);}};
 fxKick();
 
+
+/* Foco accesible en ventanas: entra al abrir, queda dentro con Tab y vuelve al botón al cerrar */
+(function(){
+  const SEL='a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+  ['modal','gz','lg'].forEach(id=>{
+    const d=document.getElementById(id); if(!d)return;
+    let back=null;
+    new MutationObserver(()=>{
+      if(!d.hidden){ back=document.activeElement; const f=d.querySelector(SEL); if(f&&!d.contains(document.activeElement))setTimeout(()=>{try{f.focus({preventScroll:true})}catch(e){}},60); }
+      else if(back&&back.isConnected){ try{back.focus({preventScroll:true})}catch(e){} back=null; }
+    }).observe(d,{attributes:true,attributeFilter:['hidden']});
+    d.addEventListener('keydown',e=>{
+      if(e.key!=='Tab')return;
+      const f=[...d.querySelectorAll(SEL)].filter(x=>x.offsetParent!==null); if(!f.length)return;
+      const a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}
+      else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}
+    });
+  });
+})();
 </script>
 </body>
 </html>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://wanna33.github.io/wannaclud/sitemap.xml
