@@ -1,6 +1,6 @@
 /* WannaClud: modo sin conexión y carga rápida.
    La página se pide primero a la red (así siempre ves la versión nueva) y las imágenes se guardan para la próxima visita. */
-const V = 'wannaclud-v3';
+const V = 'wannaclud-v4';
 const CORE = ['./', 'index.html', 'manifest.webmanifest', 'icon-192.png', 'img/logo.webp', 'img/logo-s.webp'];
 
 self.addEventListener('install', e => {
