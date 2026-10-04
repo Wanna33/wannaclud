@@ -1538,6 +1538,17 @@ body.show #showui button{cursor:pointer!important}
   .rzv-prize img{height:70px}
 }
 .rzv-left{grid-template-columns:minmax(0,1fr)}.rzv .rz-hist{flex-wrap:wrap;max-width:100%}.rzv .rz-cvbox{max-width:100%}
+
+/* ===== v20: fichas de 500 a 10 mil y banca de 100.000 ===== */
+.rz-ch.t500,.rz-chipb.t500{background:#6a3fb5;color:#fff}
+.rz-ch.t1000,.rz-chipb.t1000{background:#f0b429;color:var(--c6);border-color:#fff3b8}
+.rz-ch.t5000,.rz-chipb.t5000{background:#1f7bd8;color:#fff}
+.rz-ch.t10000,.rz-chipb.t10000{background:#c1176b;color:#fff;border-color:var(--gold2);box-shadow:0 0 10px rgb(var(--gold2-rgb)/.7),0 3px 6px rgba(0,0,0,.6)}
+.rz-ch{font-size:.54rem}
+.rzv .rz-row{flex-wrap:wrap}
+.rzv .rz-chips{flex-wrap:wrap;justify-content:center;gap:6px}
+.rzv .rz-chipb{width:40px;height:40px;font-size:.72rem}
+@media(max-width:520px){.rzv .rz-chipb{width:38px;height:38px}}
 </style>
 </head>
 <body>
@@ -1693,13 +1704,17 @@ body.show #showui button{cursor:pointer!important}
         <div class="rzv-right">
           <div class="rz-table" id="rzTable"></div>
           <div class="rz-bar">
-            <div class="rz-row rz-bankbox"><span>Fichas <b id="rzBank">1.000</b></span><span>Apuesta <b id="rzBet">0</b></span><button class="rz-refill" id="rzRefill" type="button" hidden>Recargar</button></div>
+            <div class="rz-row rz-bankbox"><span>Fichas <b id="rzBank">100.000</b></span><span>Apuesta <b id="rzBet">0</b></span><button class="rz-refill" id="rzRefill" type="button" hidden>Recargar</button></div>
             <div class="rz-row">
               <div class="rz-chips" id="rzChips" role="group" aria-label="Valor de la ficha">
                 <button type="button" data-v="1" class="rz-chipb t1" aria-pressed="false">1</button>
                 <button type="button" data-v="5" class="rz-chipb t5" aria-pressed="false">5</button>
                 <button type="button" data-v="25" class="rz-chipb t25" aria-pressed="false">25</button>
                 <button type="button" data-v="100" class="rz-chipb t100" aria-pressed="false">100</button>
+                <button type="button" data-v="500" class="rz-chipb t500" aria-pressed="false">500</button>
+                <button type="button" data-v="1000" class="rz-chipb t1000" aria-pressed="false">1k</button>
+                <button type="button" data-v="5000" class="rz-chipb t5000" aria-pressed="false">5k</button>
+                <button type="button" data-v="10000" class="rz-chipb t10000" aria-pressed="false">10k</button>
               </div>
               <div class="rz-acts">
                 <button type="button" id="rzUndo" aria-label="Deshacer la última ficha">↶</button>
@@ -3239,13 +3254,14 @@ const RZ3=(function(){
   const posOf=new Map(ORDER.map((n,i)=>[n,i]));
   const flavorOf=n=>n===0?-1:(n-1)%N;
   const thumbs=CANS.map(c=>{const i=new Image();i.src=c.thumb;return i;});
-  const START=1000;
+  const START=100000;
   /* reloj de la mesa: ronda de 45 s = 27 s de apuestas · 1 s "no va más" · 7,8 s de giro · 9,2 s de resultado */
   const EPOCH=Date.UTC(2026,9,1),L=45000,LOCK_AT=27000,SPIN_AT=28000,SPIN_T=7800,RES_AT=SPIN_AT+SPIN_T,PD=.8;
   let S=0,dpr=1,W=0,isOpen=false,raf=0,lastC=0;
   let bank=+store.get('czBank',START),chip=+store.get('czChip',5),bets={},undo=[],lastBets=null,betsRound=null;
   let state='bet',winIdx=null,ballA=0,ballR=.665,showBall=false,glow=0,lastDef=null,lastPk=null,lastPh='',curRound=-1,curPh='bet',tracked=false,lastTxt='',lastHist='';
   if(!(bank>=0))bank=START;
+  if(!store.get('czV2',0)){if(bank<START)bank=START;store.set('czBank',bank);store.set('czV2',1);}   // todos pasan a 100.000 fichas
   const coins=[];
   let baseCv=null,wheelCv=null;
   const fmt=n=>Math.round(n).toLocaleString('es-CO');
@@ -3328,7 +3344,7 @@ const RZ3=(function(){
     const t=$('#rzTable');t.innerHTML=h;
     t.querySelectorAll('[data-b]').forEach(e=>{el[e.dataset.b]=e;});
   }
-  function chipTier(v){return v>=100?'t100':v>=25?'t25':v>=5?'t5':'t1';}
+  function chipTier(v){return v>=10000?'t10000':v>=5000?'t5000':v>=1000?'t1000':v>=500?'t500':v>=100?'t100':v>=25?'t25':v>=5?'t5':'t1';}
   function paintBets(){
     const open=curPh==='bet';
     for(const k in el){
@@ -3385,7 +3401,7 @@ const RZ3=(function(){
     if(bank<t){msg('Fichas insuficientes para repetir');shake();paintBets();return;}
     clearMarks();bank-=t;bets={...lastBets};undo=Object.entries(bets).map(([k,v])=>[k,v]);betsRound=clock().r;clack();paintBets();msg('Apuesta repetida · '+fmt(t));
   };
-  $('#rzRefill').onclick=()=>{bank=START;store.set('czBank',bank);paintBets();paintRefill();msg('¡1.000 fichas nuevas!');jingle();};
+  $('#rzRefill').onclick=()=>{bank=START;store.set('czBank',bank);paintBets();paintRefill();msg('¡100.000 fichas nuevas!');jingle();};
   function msg(t){const m=$('#czMsg');m.textContent=t;m.classList.remove('pop');void m.offsetWidth;m.classList.add('pop');}
   function paintRefill(){$('#rzRefill').hidden=!(bank<1&&!total());}
 
