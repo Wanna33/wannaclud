@@ -1549,6 +1549,58 @@ body.show #showui button{cursor:pointer!important}
 .rzv .rz-chips{flex-wrap:wrap;justify-content:center;gap:6px}
 .rzv .rz-chipb{width:40px;height:40px;font-size:.72rem}
 @media(max-width:520px){.rzv .rz-chipb{width:38px;height:38px}}
+
+/* ===== v21: ruleta arriba, sin mesa verde: fondo transparente y colores del cóctel en pantalla ===== */
+#ruleta.rzv{background:transparent;padding:80px 0 90px;overflow:visible}
+#ruleta.rzv::before{display:none}
+.rzv .title small{color:var(--muted)}.rzv .title h2{color:var(--gold2);text-shadow:0 0 40px rgb(var(--gold-rgb)/.35)}.rzv .title p{color:var(--muted)}.rzv .title::after{background:var(--gold)}
+.rzv-live{background:rgb(var(--bg-rgb)/.34);box-shadow:inset 0 0 0 1.5px var(--edge),0 24px 60px var(--shd);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.rzv-round{color:var(--ink)}
+.rzv .rsnd{background:rgb(var(--bg-rgb)/.45);color:var(--ink);border-color:var(--edge)}
+.rzv-prog{background:rgb(var(--bg-rgb)/.5)}
+.rzv-stat{color:var(--ink2)}
+.rzv .rz-table{background:rgb(var(--bg-rgb)/.28);box-shadow:inset 0 0 0 1.5px var(--edge)}
+.rzv .rz-c{background:rgb(var(--bg-rgb)/.55);color:var(--ink);border-color:var(--edge)}
+.rzv .rz-c span{text-shadow:none}
+.rzv .rz-c.red{background:#b3121f;color:#fff;border-color:rgba(255,255,255,.55)}
+.rzv .rz-c.black{background:var(--c5);color:#fff;border-color:rgba(255,255,255,.4)}
+.rzv .rz-c.green{background:#0b7a3c;color:#fff;border-color:rgba(255,255,255,.5)}
+.rzv .rz-c.red span,.rzv .rz-c.black span,.rzv .rz-c.green span{text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.rzv .rz-c.has{box-shadow:0 0 0 2px var(--acc)}
+.rzv .rz-flv{color:var(--ink)}
+.rzv .rz-fl small{background:rgba(0,0,0,.6)}
+.rzv .rz-row{color:var(--ink2)}.rzv .rz-row b{color:var(--ink)}
+.rzv .rz-acts button{background:rgb(var(--bg-rgb)/.55);color:var(--ink);border-color:var(--edge)}
+.rzv .rz-chipb{border-color:rgba(255,255,255,.9);box-shadow:0 4px 8px var(--shd),inset 0 0 0 3px rgba(0,0,0,.14)}
+.rzv .rz-chipb.on{border-color:var(--acc);box-shadow:0 0 0 3px var(--acc),0 10px 16px var(--shd)}
+.rzv .rz-refill{background:var(--acc);color:#fff;border-color:transparent}
+.rzv .cz-note{color:var(--ink2)}
+.rzv-prize{background:rgb(var(--bg-rgb)/.5);box-shadow:inset 0 0 0 1.5px var(--acc),0 14px 30px var(--shd);--pz:var(--acc)}
+.rzv-pz-t small{color:var(--ink2)}.rzv-pz-t b{color:var(--ink)}
+.rzv-pz-a .btn.ghost{color:var(--ink);border-color:var(--ink)}
+.rzv-my{background:rgb(var(--bg-rgb)/.55);color:var(--ink)}
+.rzv-my.up{color:#0a7a3a;box-shadow:0 0 0 1px #0a7a3a}.rzv-my.down{color:#b3121f}.rzv-my.even{color:var(--ink)}
+
+/* ===== v22: colores legibles sobre la paleta oscura del cóctel (debajo del inicio) ===== */
+.rzv-live{box-shadow:inset 0 0 0 1.5px rgb(var(--gold-rgb)/.5),0 24px 60px rgba(0,0,0,.35)}
+.rzv-round{color:var(--gold2)}
+.rzv .rsnd{background:rgb(var(--bg-rgb)/.5);color:var(--silver);border-color:rgb(var(--gold-rgb)/.5)}
+.rzv-prog{background:rgba(255,255,255,.12)}
+.rzv-stat{color:var(--muted)}
+.rzv .rz-table{box-shadow:inset 0 0 0 1.5px rgb(var(--gold-rgb)/.5)}
+.rzv .rz-c{background:rgb(var(--bg-rgb)/.6);color:var(--silver);border-color:rgb(var(--gold-rgb)/.55)}
+.rzv .rz-c.has{box-shadow:0 0 0 2px var(--gold2)}
+.rzv .rz-flv{color:var(--gold2)}
+.rzv .rz-row{color:var(--muted)}.rzv .rz-row b{color:var(--silver)}
+.rzv .rz-acts button{background:rgb(var(--bg-rgb)/.6);color:var(--silver);border-color:rgb(var(--gold-rgb)/.5)}
+.rzv .rz-chipb.on{border-color:var(--gold2);box-shadow:0 0 0 3px var(--gold),0 10px 16px rgba(0,0,0,.5)}
+.rzv .rz-refill{background:var(--gold);color:var(--c5)}
+.rzv .cz-note{color:var(--muted)}
+.rzv-prize{background:rgb(var(--bg-rgb)/.6);box-shadow:inset 0 0 0 1.5px var(--gold),0 14px 30px rgba(0,0,0,.4);--pz:var(--gold2)}
+.rzv-pz-t small{color:var(--muted)}.rzv-pz-t b{color:var(--silver)}
+.rzv-pz-a .btn.ghost{color:var(--silver);border-color:rgb(var(--gold-rgb)/.6)}
+.rzv-my{background:rgb(var(--bg-rgb)/.6);color:var(--silver)}
+.rzv-my.up{color:#7dffb0;box-shadow:0 0 0 1px #7dffb0}.rzv-my.down{color:#ff9a9a}.rzv-my.even{color:var(--gold2)}
 </style>
 </head>
 <body>
@@ -1570,9 +1622,9 @@ body.show #showui button{cursor:pointer!important}
       <a href="#inicio" class="brand" aria-label="WannaClud Cócteles, inicio"><img src="img/logo-s.webp" alt="WannaClud Cócteles"></a>
       <ul id="menu">
         <li><a href="#inicio" data-sec="inicio">Inicio</a></li>
+        <li><a href="#ruleta" data-sec="ruleta">Ruleta en vivo</a></li>
         <li><a href="#juegos" data-sec="juegos">Juegos</a></li>
         <li><a href="#latas" data-sec="latas">Latas</a></li>
-        <li><a href="#ruleta" data-sec="ruleta">Ruleta en vivo</a></li>
         <li><a href="#tu-sabor" data-sec="tu-sabor">Tu sabor</a></li>
         <li><a href="#como" data-sec="como">Cómo pedir</a></li>
         <li><a href="#fiestas" data-sec="fiestas">Fiestas</a></li>
@@ -1647,41 +1699,9 @@ body.show #showui button{cursor:pointer!important}
   </div>
 </section>
 
-<!-- ================= JUEGOS ================= -->
-<section id="juegos" class="sec alt">
-  <div class="fdecor" data-f="f-pina,f-straw,f-limahalf,f-tamarind" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="title reveal"><small>Diversión</small><h2 data-split>Zona de juegos</h2><p>Juega, desbloquea logros y descubre tu sabor favorito</p></div>
-    <div class="gcards">
-      <article class="gcard reveal" style="--d:0"><img src="img/f-limawedge.webp" alt="" loading="lazy"><h3>Memoria de sabores</h3><p>Encuentra las parejas de latas con los menos intentos posibles.</p><div class="gbest">Mejor <b data-best="memory">–</b></div><button class="btn theme" type="button" data-play="memory">Jugar</button></article>
-      <article class="gcard reveal" style="--d:1"><img src="img/f-passion.webp" alt="" loading="lazy"><h3>Rasca y gana</h3><p>Rasca la tarjeta dorada con el dedo y descubre qué sabor te toca.</p><div class="gbest">Tarjetas <b data-best="scratch">0</b></div><button class="btn theme" type="button" data-play="scratch">Jugar</button></article>
-      <article class="gcard reveal" style="--d:2"><img src="img/f-pina.webp" alt="" loading="lazy"><h3>Trivia de sabores</h3><p>8 preguntas sobre las latas. Responde rápido y gana más puntos.</p><div class="gbest">Mejor <b data-best="trivia">0</b></div><button class="btn theme" type="button" data-play="trivia">Jugar</button></article>
-      <article class="gcard reveal" style="--d:3"><img src="img/f-berries.webp" alt="" loading="lazy"><h3>Tragamonedas</h3><p>Jala la palanca y llévate un combo sorpresa de tres sabores.</p><div class="gbest">Jugadas <b data-best="slots">0</b></div><button class="btn theme" type="button" data-play="slots">Jugar</button></article>
-      <article class="gcard reveal" style="--d:4"><img src="img/f-strawhalf.webp" alt="" loading="lazy"><h3>Ruleta en vivo</h3><p>Rondas cada 45 segundos, mesa de apuestas y fichas de juego. Sin dinero, solo diversión.</p><div class="gbest">Rondas <b data-best="casino">0</b></div><button class="btn primary" type="button" data-play="casino">Ir a la mesa</button></article>
-      <article class="gcard reveal" style="--d:5"><img src="img/f-orange.webp" alt="" loading="lazy"><h3>Atrapa la fruta</h3><p>Mueve la lata con el dedo y atrapa la fruta antes de que se acabe el tiempo. El hielo congela la caída.</p><div class="gbest">Récord <b data-best="catch">0</b></div><button class="btn theme" type="button" data-play="catch">Jugar</button></article>
-    </div>
-  </div>
-</section>
-
-<!-- ================= LATAS ================= -->
-<section id="latas" class="sec">
-  <div class="fdecor" data-f="f-limahalf,f-orange,f-straw,f-pinawedge" aria-hidden="true"></div>
-  <div class="wrap">
-    <div class="title reveal"><small>Cócteles preparados</small><h2 data-split>Nuestras latas</h2><p>Todas a <b>$25.000 COP</b> · Toca una lata para ver el detalle</p></div>
-    <div class="packs-wrap reveal"><p class="packs-t">Cajas listas · mezcla sorpresa</p><div class="packs" id="packs"></div></div>
-    <div class="tools reveal">
-      <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Buscar sabor…" aria-label="Buscar sabor" autocomplete="off"></label>
-      <div class="fchips" id="fchips" role="group" aria-label="Filtrar por tipo"></div>
-      <select id="sort" class="sortsel" aria-label="Ordenar"><option value="dest">Destacados</option><option value="az">Nombre A–Z</option></select>
-    </div>
-    <p class="countl" id="countl" aria-live="polite"></p>
-    <div class="cans" id="cans"></div>
-  </div>
-</section>
-
-<!-- ================= QUIZ ================= -->
 <!-- ================= RULETA EN VIVO ================= -->
 <section id="ruleta" class="sec rzv">
+  <div class="fdecor" data-f="f-limahalf,f-orange,f-straw,f-pinawedge" aria-hidden="true"></div>
   <div class="wrap">
     <div class="title reveal"><small>Casino</small><h2 data-split>Ruleta en vivo</h2><p>Una ronda nueva cada 45 segundos, igual para todos. Apuesta con fichas de juego y descubre el sabor de cada número.</p></div>
     <div class="rzv-live reveal" id="rzvLive">
@@ -1732,6 +1752,39 @@ body.show #showui button{cursor:pointer!important}
   <canvas id="czCoins" aria-hidden="true"></canvas>
 </section>
 
+<!-- ================= JUEGOS ================= -->
+<section id="juegos" class="sec alt">
+  <div class="fdecor" data-f="f-pina,f-straw,f-limahalf,f-tamarind" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="title reveal"><small>Diversión</small><h2 data-split>Zona de juegos</h2><p>Juega, desbloquea logros y descubre tu sabor favorito</p></div>
+    <div class="gcards">
+      <article class="gcard reveal" style="--d:0"><img src="img/f-limawedge.webp" alt="" loading="lazy"><h3>Memoria de sabores</h3><p>Encuentra las parejas de latas con los menos intentos posibles.</p><div class="gbest">Mejor <b data-best="memory">–</b></div><button class="btn theme" type="button" data-play="memory">Jugar</button></article>
+      <article class="gcard reveal" style="--d:1"><img src="img/f-passion.webp" alt="" loading="lazy"><h3>Rasca y gana</h3><p>Rasca la tarjeta dorada con el dedo y descubre qué sabor te toca.</p><div class="gbest">Tarjetas <b data-best="scratch">0</b></div><button class="btn theme" type="button" data-play="scratch">Jugar</button></article>
+      <article class="gcard reveal" style="--d:2"><img src="img/f-pina.webp" alt="" loading="lazy"><h3>Trivia de sabores</h3><p>8 preguntas sobre las latas. Responde rápido y gana más puntos.</p><div class="gbest">Mejor <b data-best="trivia">0</b></div><button class="btn theme" type="button" data-play="trivia">Jugar</button></article>
+      <article class="gcard reveal" style="--d:3"><img src="img/f-berries.webp" alt="" loading="lazy"><h3>Tragamonedas</h3><p>Jala la palanca y llévate un combo sorpresa de tres sabores.</p><div class="gbest">Jugadas <b data-best="slots">0</b></div><button class="btn theme" type="button" data-play="slots">Jugar</button></article>
+      <article class="gcard reveal" style="--d:4"><img src="img/f-strawhalf.webp" alt="" loading="lazy"><h3>Ruleta en vivo</h3><p>Rondas cada 45 segundos, mesa de apuestas y fichas de juego. Sin dinero, solo diversión.</p><div class="gbest">Rondas <b data-best="casino">0</b></div><button class="btn primary" type="button" data-play="casino">Ir a la mesa</button></article>
+      <article class="gcard reveal" style="--d:5"><img src="img/f-orange.webp" alt="" loading="lazy"><h3>Atrapa la fruta</h3><p>Mueve la lata con el dedo y atrapa la fruta antes de que se acabe el tiempo. El hielo congela la caída.</p><div class="gbest">Récord <b data-best="catch">0</b></div><button class="btn theme" type="button" data-play="catch">Jugar</button></article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= LATAS ================= -->
+<section id="latas" class="sec">
+  <div class="fdecor" data-f="f-limahalf,f-orange,f-straw,f-pinawedge" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="title reveal"><small>Cócteles preparados</small><h2 data-split>Nuestras latas</h2><p>Todas a <b>$25.000 COP</b> · Toca una lata para ver el detalle</p></div>
+    <div class="packs-wrap reveal"><p class="packs-t">Cajas listas · mezcla sorpresa</p><div class="packs" id="packs"></div></div>
+    <div class="tools reveal">
+      <label class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input id="q" type="search" placeholder="Buscar sabor…" aria-label="Buscar sabor" autocomplete="off"></label>
+      <div class="fchips" id="fchips" role="group" aria-label="Filtrar por tipo"></div>
+      <select id="sort" class="sortsel" aria-label="Ordenar"><option value="dest">Destacados</option><option value="az">Nombre A–Z</option></select>
+    </div>
+    <p class="countl" id="countl" aria-live="polite"></p>
+    <div class="cans" id="cans"></div>
+  </div>
+</section>
+
+<!-- ================= QUIZ ================= -->
 <section id="tu-sabor" class="sec alt">
   <div class="fdecor" data-f="f-passion,f-berries,f-limawedge" aria-hidden="true"></div>
   <div class="wrap">
@@ -1819,7 +1872,7 @@ body.show #showui button{cursor:pointer!important}
 
 <footer>
   <img src="img/logo.webp" alt="WannaClud Cócteles">
-  <nav aria-label="Pie de página"><a href="#juegos">Juegos</a><a href="#latas">Latas</a><a href="#ruleta">Ruleta en vivo</a><a href="#tu-sabor">Tu sabor</a><a href="#como">Cómo pedir</a><a href="#fiestas">Fiestas</a><a href="#faq">Preguntas</a><a href="#contacto">Contacto</a></nav>
+  <nav aria-label="Pie de página"><a href="#ruleta">Ruleta en vivo</a><a href="#juegos">Juegos</a><a href="#latas">Latas</a><a href="#tu-sabor">Tu sabor</a><a href="#como">Cómo pedir</a><a href="#fiestas">Fiestas</a><a href="#faq">Preguntas</a><a href="#contacto">Contacto</a></nav>
   <div class="fbtns"><button class="btn ghost" id="shareSite" type="button">Compartir esta página</button><button class="btn ghost" id="install" type="button" hidden>Instalar la app</button></div>
   <small>© <span id="y"></span> WannaClud Cócteles · WhatsApp +57 310 203 5327</small>
   <small>Bebe con responsabilidad. Prohibida la venta a menores de edad.</small>
@@ -3076,7 +3129,7 @@ function schedule(){clearTimeout(tm);if(manual||reduce)return;tm=setTimeout(()=>
 const RZ3=(function(){
   const R=5,TAU=Math.PI*2,NP=37,step=TAU/NP,RW=R*.715;       // RW = radio donde termina la rueda y empieza la pendiente
   let renderer=null,scene=null,camera=null,wheel=null,ball=null,disc=null,tex=null,hl=null,hlIdx=-1,ready=false,loading=null;
-  let camD=23,shake=0,lastState='bet',sizePx=0;
+  let neonL=null,coolL=null,pendTint=null,camD=23,shake=0,lastState='bet',sizePx=0;
   const SRC='https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
   function load(){
@@ -3175,8 +3228,8 @@ const RZ3=(function(){
     scene.add(new THREE.HemisphereLight(0xfff1d6,0x1a0f05,.42));
     const key=new THREE.SpotLight(0xffe9c4,1.55,80,.62,.6,1);key.position.set(5,22,9);key.castShadow=true;key.shadow.mapSize.set(1024,1024);key.shadow.bias=-.0004;key.shadow.radius=3;scene.add(key);key.target.position.set(0,0,0);scene.add(key.target);
     const warm=new THREE.PointLight(0xffc060,.9,40);warm.position.set(-9,5,6);scene.add(warm);
-    const neon=new THREE.PointLight(0xff2d95,.7,40);neon.position.set(9,4,-9);scene.add(neon);
-    const cool=new THREE.PointLight(0x7fd0ff,.35,40);cool.position.set(-6,6,-10);scene.add(cool);
+    const neon=new THREE.PointLight(0xff2d95,.7,40);neon.position.set(9,4,-9);scene.add(neon);neonL=neon;
+    const cool=new THREE.PointLight(0x7fd0ff,.35,40);cool.position.set(-6,6,-10);scene.add(cool);coolL=cool;if(pendTint)tint(pendTint[0],pendTint[1]);
   }
 
   function init(canvas,texCanvas){
@@ -3189,6 +3242,8 @@ const RZ3=(function(){
       build(texCanvas);ready=true;return true;
     }catch(e){ready=false;try{renderer&&renderer.dispose();}catch(_){}renderer=null;return false;}
   }
+  /* las luces de colores de la escena toman los tonos del cóctel que esté en pantalla */
+  function tint(a,b){pendTint=[a,b];if(!ready||!neonL)return;try{neonL.color.set(a);coolL.color.set(b);}catch(e){}}
   function resize(px,dpr){
     if(!ready)return;sizePx=px;
     renderer.setPixelRatio(Math.min(dpr,2));renderer.setSize(px,px,false);camera.aspect=1;camera.updateProjectionMatrix();
@@ -3231,7 +3286,7 @@ const RZ3=(function(){
     camera.lookAt(0,-.3,0);
     renderer.render(scene,camera);
   }
-  return {load,init,resize,setTexture,render,get ready(){return ready;},get loaded(){return !!window.THREE;}};
+  return {load,init,resize,setTexture,tint,render,get ready(){return ready;},get loaded(){return !!window.THREE;}};
 })();
 
 /* =====================================================================
@@ -3259,7 +3314,7 @@ const RZ3=(function(){
   const EPOCH=Date.UTC(2026,9,1),L=45000,LOCK_AT=27000,SPIN_AT=28000,SPIN_T=7800,RES_AT=SPIN_AT+SPIN_T,PD=.8;
   let S=0,dpr=1,W=0,isOpen=false,raf=0,lastC=0;
   let bank=+store.get('czBank',START),chip=+store.get('czChip',5),bets={},undo=[],lastBets=null,betsRound=null;
-  let state='bet',winIdx=null,ballA=0,ballR=.665,showBall=false,glow=0,lastDef=null,lastPk=null,lastPh='',curRound=-1,curPh='bet',tracked=false,lastTxt='',lastHist='';
+  let tintFor=-1,state='bet',winIdx=null,ballA=0,ballR=.665,showBall=false,glow=0,lastDef=null,lastPk=null,lastPh='',curRound=-1,curPh='bet',tracked=false,lastTxt='',lastHist='';
   if(!(bank>=0))bank=START;
   if(!store.get('czV2',0)){if(bank<START)bank=START;store.set('czBank',bank);store.set('czV2',1);}   // todos pasan a 100.000 fichas
   const coins=[];
@@ -3592,6 +3647,7 @@ const RZ3=(function(){
   function frame(ts){
     raf=0;
     if(!isOpen||document.hidden)return;
+    if(cur!==tintFor){tintFor=cur;const th=CANS[cur].t;RZ3.tint(th.acc,th.k1);}
     const s=sim();W=s.Wv;ballA=s.bA;ballR=s.bR;showBall=s.show;
     state=s.ph==='spin'?'spin':s.ph==='res'?'done':'bet';winIdx=(s.ph==='spin'||s.ph==='res')?s.I.idx:null;
     tick(s);draw(ts);drawCoins(Math.min(.05,(ts-lastC)/1000||.016));lastC=ts;
