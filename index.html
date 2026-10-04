@@ -2107,8 +2107,10 @@ const MUSIC=(function(){
     if(!A.src)load(ti);
     try{if(navigator.audioSession)navigator.audioSession.type='playback';}catch(_){}
     A.volume=0;sPlaying=true;store.set('musicOff',0);
-    const p=A.play();if(p&&p.catch)p.catch(()=>{sPlaying=false;sNotify();});
+    const p=A.play();
+    if(p&&p.catch)p.catch(()=>{sPlaying=false;sNotify();armAuto();});
     fadeTo(target(),1400);award('fiesta');sNotify();
+    return p;
   }
   function sStop(user){
     if(useGen)return GEN.stop();
@@ -2121,7 +2123,7 @@ const MUSIC=(function(){
     else if(sPlaying){load(ti+1);const p=A.play();if(p&&p.catch)p.catch(()=>{});}
   });
   A.addEventListener('timeupdate',()=>{
-    if(A.duration&&A.duration-A.currentTime<25){const n=(ti+1)%TRACKS.length;if(preFor!==n){preFor=n;pre=new Audio();pre.preload='auto';pre.src=TRACKS[n].src;}}
+    if(A.duration&&A.duration-A.currentTime<25){const n=(ti+1)%TRACKS.length;if(preFor!==n){preFor=n;if(!window.fastNet||fastNet()){try{fetch(TRACKS[n].src).then(r=>r.arrayBuffer()).catch(()=>{});}catch(e){}}}}
   });
   A.addEventListener('playing',sNotify);
   document.addEventListener('visibilitychange',()=>{
@@ -2129,18 +2131,25 @@ const MUSIC=(function(){
     if(document.hidden){if(sPlaying){A.pause();hidPaused=true;}}
     else if(hidPaused){hidPaused=false;const p=A.play();if(p&&p.catch)p.catch(()=>{});}
   });
-  new MutationObserver(()=>{sduck=document.body.classList.contains('cz-open')?.3:1;if(sPlaying&&!useGen)fadeTo(target(),400);}).observe(document.body,{attributes:true,attributeFilter:['class']});
-  /* el primer toque en cualquier parte enciende la música (salvo que la persona la haya pausado antes) */
-  (function(){
-    if(store.get('musicOff',0))return;
-    const evs=['pointerdown','keydown','touchend'];
-    const go=e=>{
-      if(e&&e.target&&e.target.closest&&e.target.closest('#musicBtn,#tsMusic'))return;
-      evs.forEach(n=>removeEventListener(n,go,true));
-      if(!MUSIC.playing&&!store.get('musicOff',0))sStart();
-    };
-    evs.forEach(n=>addEventListener(n,go,true));
-  })();
+  new MutationObserver(()=>{const d=document.body.classList.contains('cz-open')?.3:1;if(d===sduck)return;sduck=d;if(sPlaying&&!useGen)fadeTo(target(),400);}).observe(document.body,{attributes:true,attributeFilter:['class']});
+  /* guardián: si el sistema pausa el audio (llamada, notificación, cambio de canción bloqueado) intenta seguir; si no puede, el botón lo refleja y el siguiente toque lo reanuda */
+  setInterval(()=>{
+    if(useGen||!sPlaying||document.hidden||!A.src||A.ended)return;
+    if(A.paused){const p=A.play();if(p&&p.catch)p.catch(()=>{sPlaying=false;sNotify();armAuto();});}
+  },2500);
+  /* el primer toque en cualquier parte enciende la música (salvo que la persona la haya pausado); si el navegador la rechaza, se reintenta en el siguiente toque */
+  const AEV=['pointerdown','click','touchend','keydown'];let armed=false;
+  function disarm(){armed=false;AEV.forEach(n=>removeEventListener(n,go,true));}
+  function armAuto(){if(armed||useGen||store.get('musicOff',0))return;armed=true;AEV.forEach(n=>addEventListener(n,go,true));}
+  function go(e){
+    if(e&&e.target&&e.target.closest&&e.target.closest('#musicBtn,#tsMusic'))return;
+    if(MUSIC.playing&&!A.paused){disarm();return;}
+    if(store.get('musicOff',0)){disarm();return;}
+    sPlaying=false;
+    const p=sStart();
+    if(p&&p.then)p.then(disarm,()=>{});else disarm();
+  }
+  armAuto();
 
   return {
     start:sStart,stop:()=>sStop(true),stopQuiet:()=>sStop(false),
